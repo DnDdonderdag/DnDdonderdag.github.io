@@ -1,265 +1,3 @@
-//-----------------------------------------------------
-// UTILITY FUNCTIONS
-//-----------------------------------------------------
-
-// Helper function to check if a function exists
-function functionExists(funcName) {
-    return typeof window[funcName] === 'function';
-}
-
-// Create utility functions for DOM manipulation
-function getById(id) {
-    return document.getElementById(id);
-}
-
-// Error handling wrapper for function calls
-function safeCall(func, ...args) {
-    if (typeof func === 'function') {
-        try {
-            return func(...args);
-        } catch (error) {
-            console.error(`Error calling ${func.name}:`, error);
-        }
-    }
-    return null;
-}
-
-// Handler for key events
-function handleKeyEvent(event, action) {
-    // Implementation will depend on your needs
-    if (action === "typing") {
-        update("typing");
-    } else {
-        update();
-    }
-}
-
-//-----------------------------------------------------
-// CORE UPDATE FUNCTIONS
-//-----------------------------------------------------
-
-// Main update function - This drives everything else
-function update(exception) {
-    //updates lookups
-    if (exception != "typing") {
-        safeCall(updateLookups);
-    }
-
-    //updates the sizes of textareas so they fit in their frame
-    let ids = document.getElementsByClassName("sizeadjust");
-    for (let i = 0; i < ids.length; i++) {
-        sizeadjust(ids[i].id);
-    }
-
-    //updates the sizes of inputareas so they fit in their frame
-    let inputIds = document.getElementsByClassName("sizeadjustinput");
-    for (let i = 0; i < inputIds.length; i++) {
-        let boxlength = window.getComputedStyle(inputIds[i]).getPropertyValue("--boxlength");
-        let startfont = window.getComputedStyle(inputIds[i]).getPropertyValue("--startfont");
-        sizeadjustinput(inputIds[i].id, boxlength, startfont);
-    }
-
-    //updates all the generic buttons
-    updategenericbuttons();
-
-    //updates all the calculated fields
-    if (exception != "typing") {
-        updateCalculatedFields();
-    }
-
-    //updates the sidebar to reflect chosen archetype
-    safeCall(changeSidebar);
-}
-
-function sizeadjust(name) {
-    //adjust formfield textsize on the fly
-    let textArea = document.getElementById(name);
-    if (!textArea) return; // Safety check
-
-    let style = window.getComputedStyle(textArea, null).getPropertyValue('font-size');
-    let fontSize = parseFloat(style);
-
-    while (fontSize < 14) {
-        style = window.getComputedStyle(textArea, null).getPropertyValue('font-size');
-        fontSize = parseFloat(style);
-        textArea.style.fontSize = fontSize + 0.1 + 'px';
-        if (textArea.clientHeight < textArea.scrollHeight) {
-            textArea.style.fontSize = fontSize - 0.1 + 'px';
-            break;
-        }
-    }
-
-    while (textArea.clientHeight < textArea.scrollHeight) {
-        style = window.getComputedStyle(textArea, null).getPropertyValue('font-size');
-        fontSize = parseFloat(style);
-        textArea.style.fontSize = fontSize - 0.1 + 'px';
-    }
-}
-
-function sizeadjustinput(id, boxlength, startfont) {
-    let invisdiv = document.getElementById("invisdiv");
-    boxlength = parseInt(boxlength);
-    startfont = parseFloat(startfont || 14);
-
-    if (!invisdiv) {
-        invisdiv = document.createElement("div");
-        invisdiv.id = "invisdiv";
-        invisdiv.style.position = "absolute";
-        invisdiv.style.visibility = "hidden";
-        invisdiv.style.whiteSpace = "nowrap";
-        document.body.appendChild(invisdiv);
-    }
-
-    let inputarea = document.getElementById(id);
-    if (!inputarea) return; // Safety check
-
-    let style = window.getComputedStyle(inputarea, null).getPropertyValue('font-size');
-    let fontSize = style;
-    invisdiv.style.fontSize = fontSize;
-    inputarea.style.fontSize = fontSize;
-    invisdiv.innerText = inputarea.value;
-
-    while (invisdiv.clientWidth < boxlength && Number(fontSize.slice(0, -2)) < startfont) {
-        style = window.getComputedStyle(inputarea, null).getPropertyValue('font-size');
-        fontSize = String(Number(style.slice(0, -2)) + 0.1) + "px";
-        invisdiv.style.fontSize = fontSize;
-        inputarea.style.fontSize = fontSize;
-        invisdiv.innerText = inputarea.value;
-    }
-
-    while (invisdiv.clientWidth > boxlength) {
-        style = window.getComputedStyle(inputarea, null).getPropertyValue('font-size');
-        fontSize = String(Number(style.slice(0, -2)) - 0.1) + "px";
-        invisdiv.style.fontSize = fontSize;
-        inputarea.style.fontSize = fontSize;
-        invisdiv.innerText = inputarea.value;
-    }
-}
-
-function updategenericbuttons() {
-    let buttons = document.getElementsByClassName("genericbutton");
-    for (let i = 0; i < buttons.length; i++) {
-        let button = buttons[i];
-        if (button.value == 0) {
-            button.style.setProperty('background-color', '#dde4ff');
-        } else if (button.value == 1) {
-            button.style.setProperty('background-color', 'grey');
-        }
-    }
-
-    let checkmarks = document.getElementsByClassName("checkmarkbutton");
-    for (let i = 0; i < checkmarks.length; i++) {
-        let button = checkmarks[i];
-        if (button.value == 0) {
-            button.textContent = "";
-        } else if (button.value == 1) {
-            button.textContent = "◆";
-        }
-    }
-}
-
-function updateCalculatedFields() {
-    let fields = document.getElementsByClassName("calculated");
-    for (let i = 0; i < fields.length; i++) {
-        let field = fields[i];
-        let calculation = field.textContent;
-
-        if (!calculation) {
-            field.value = "";
-            continue;
-        }
-
-        let count = (calculation.match(/\[/g) || []).length;
-        for (let j = 0; j < count; j++) {
-            let start = calculation.indexOf("[");
-            if (start === -1) break;
-
-            let finish = calculation.indexOf("]");
-            if (finish === -1) break;
-
-            let replacementid = calculation.slice(start + 1, finish);
-            try {
-                let element = document.getElementById(replacementid);
-                if (!element) throw new Error("Element not found");
-
-                let replacementtext = element.value;
-                let replacement = (replacementtext === "") ? (0) : (parseInt(replacementtext) || 0);
-                calculation = calculation.replace(calculation.slice(start, finish + 1), String(replacement));
-            }
-            catch (error) {
-                calculation = calculation.replace(calculation.slice(start, finish + 1), "0");
-            }
-        }
-
-        calculation = calculation.replaceAll("--", "+");
-        if (calculation === "") {
-            field.value = "";
-        } else {
-            try {
-                let val = eval(calculation);
-                if (isNaN(val)) {
-                    field.value = calculation;
-                } else {
-                    field.value = val;
-                }
-            } catch (error) {
-                field.value = calculation;
-            }
-        }
-    }
-}
-
-//-----------------------------------------------------
-// MISSING FUNCTIONS - Placeholders that you'll need to implement
-//-----------------------------------------------------
-
-// These are functions referenced elsewhere but not defined
-function updateLookups() {
-    console.log("updateLookups called");
-    // Implement this based on your specific requirements
-}
-
-function changeSidebar() {
-    console.log("changeSidebar called");
-    // Implementation will depend on your sidebar functionality
-}
-
-function entercalc(event) {
-    // This is called when focusing calculated fields
-    console.log("entercalc called on", event.target);
-}
-
-function unfocusfunc(element, action) {
-    console.log("unfocusfunc called", action);
-
-    if (action.includes("calc")) {
-        // Handle calculated field unfocus
-    }
-
-    if (action.includes("sync")) {
-        // Handle syncing between fields
-    }
-
-    if (action.includes("update")) {
-        // Handle general updates
-        update();
-    }
-}
-
-function genericbuttonclick(event) {
-    let button = event.target;
-    button.value = button.value == "0" ? "1" : "0";
-    updategenericbuttons();
-    update();
-}
-
-function genericcheckmarkclick(event) {
-    let checkmark = event.target;
-    checkmark.value = checkmark.value == "0" ? "1" : "0";
-    updategenericbuttons();
-    update();
-}
-
 //asset creation
 function createFormField(top, left, width, height, name, format, textsize, color, align, parentdiv, calculated = false, initcalculation = "", syncbool = false, addedclass = "") {
     const formfield = document.createElement(format);
@@ -1230,67 +968,168 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
 //saving and loading functions
 async function savestate() {
-    var formfields = document.getElementsByClassName("save")
-    var json = {}
-    for (let i = 0; i < formfields.length; i++) {
-        field = formfields.item(i)
-        json[String(field.id)] = field.value
-        if (String(field.className).includes("calculated")) {
-            json[String(field.id) + " calculation"] = field.textContent
+    let savelist = document.getElementsByClassName("save");
+    let saveobj = {};
+    let missingIds = [];
+
+    console.log(`Found ${savelist.length} saveable elements`);
+
+    for (let i = 0; i < savelist.length; i++) {
+        const element = savelist[i];
+
+        // Check if element has an ID
+        if (!element.id) {
+            missingIds.push(element.className);
+            continue;
+        }
+
+        // Handle different element types
+        if (element.type === "checkbox" || element.type === "radio") {
+            saveobj[element.id] = element.checked;
+        } else if (element.value !== undefined) {
+            saveobj[element.id] = element.value;
+        } else if (element.textContent) {
+            saveobj[element.id] = element.textContent;
+        }
+
+        // Special handling for calculated fields
+        if (element.classList.contains("calculated") && element.textContent) {
+            saveobj[element.id + "calculation"] = element.textContent;
         }
     }
-    file = JSON.stringify(json, undefined, " ")
-    console.log(file)
-    copyToClipboard(file);
-    alert("data copied to clipboard, paste data in character.json file")
 
+    if (missingIds.length > 0) {
+        console.warn("Some elements don't have IDs and won't be saved:", missingIds);
+    }
 
+    // Create a Blob with the JSON data
+    const jsonData = JSON.stringify(saveobj, null, 2);
+    const blob = new Blob([jsonData], { type: 'application/json' });
+
+    // Create a download link and trigger it
+    const fileName = saveobj.charactername ?
+        `${saveobj.charactername.replace(/\s+/g, '_')}.json` :
+        'dnd_character_sheet.json';
+
+    const downloadLink = document.createElement('a');
+    downloadLink.download = fileName;
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.style.display = 'none';
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+
+    // Clean up
+    setTimeout(() => {
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(downloadLink.href);
+    }, 100);
+
+    console.log("Character saved to file: " + fileName);
 } async function loadstate(result) {
-    if (await CheckSaved()) {
+    let loadAction = true;
+
+    if (!(await CheckSaved())) {
+        loadAction = confirm("Are you sure you want to open this file? The current one is not saved.");
+    }
+
+    if (loadAction) {
+        console.log("Loading character data...");
+        let successCount = 0;
+        let failCount = 0;
+        let failedFields = [];
+
+        // Debug the specific problematic field
+        console.log("Looking for FEATURES & TRAITS element...");
+        const featuresElement = document.getElementById("FEATURES & TRAITS");
+        console.log("Element found:", featuresElement ? "Yes" : "No");
+
+        // Try alternative selector for problematic IDs
+        if (!featuresElement) {
+            console.log("Trying alternative selector...");
+            const altElement = document.querySelector('[id="FEATURES & TRAITS"]');
+            console.log("Found with alternative selector:", altElement ? "Yes" : "No");
+        }
+
         for (const property in result) {
             try {
+                // Handle calculation fields
                 if (property.includes("calculation")) {
-                    field = document.getElementById(property.slice(0, property.length - 12))
-                    field.textContent = result[property]
-                } else {
-                    field = document.getElementById(property)
-                    field.value = result[property]
-                }
-            }
+                    const fieldId = property.slice(0, property.length - 11);
+                    let field = document.getElementById(fieldId);
 
-            catch { console.log("did not find: ", property) }
-        }
-    }
-    else {
-        if (confirm("Are you sure you want to open this file, the current one is not saved.") == true) {
-            for (const property in result) {
-                try {
-                    if (property.includes("calculation")) {
-                        field = document.getElementById(property.slice(0, property.length - 12))
-                        field.textContent = result[property]
-                    } else {
-                        field = document.getElementById(property)
-                        field.value = result[property]
+                    // Try alternative selector for problematic IDs
+                    if (!field && fieldId.includes(" ")) {
+                        field = document.querySelector(`[id="${fieldId}"]`);
                     }
 
-                }
-                catch { console.log("did not find: ", property) }
-            }
+                    if (field) {
+                        field.textContent = result[property];
+                        successCount++;
+                    } else {
+                        throw new Error(`Field not found: ${fieldId}`);
+                    }
+                } else {
+                    let field = document.getElementById(property);
 
+                    // Try alternative selector for problematic IDs
+                    if (!field && property.includes(" ")) {
+                        field = document.querySelector(`[id="${property}"]`);
+                    }
+
+                    if (field) {
+                        // Handle different field types
+                        if (field.type === "checkbox" || field.type === "radio") {
+                            field.checked = result[property];
+                        } else if (field.value !== undefined) {
+                            field.value = result[property];
+                        } else {
+                            field.textContent = result[property];
+                        }
+                        successCount++;
+                    } else {
+                        throw new Error(`Field not found: ${property}`);
+                    }
+                }
+            } catch (error) {
+                console.log(`Error loading field: ${property}`, error.message);
+                failedFields.push(property);
+                failCount++;
+            }
         }
 
+        console.log(`Character loaded: ${successCount} fields loaded successfully, ${failCount} fields failed`);
+        if (failCount > 0) {
+            console.log("Failed fields:", failedFields);
+        }
+        update(); // Update calculations after loading
     }
-    update()
 } function unpackjson() {
     const file = this.files[0];
-    reader = new FileReader()
-    reader.readAsText(file)
-    reader.onload = function () {
-        loadstate(JSON.parse(reader.result));
+    if (!file) {
+        console.log("No file selected");
+        return;
     }
+
+    console.log(`Loading file: ${file.name}`);
+    const reader = new FileReader();
+
+    reader.readAsText(file);
+
+    reader.onload = function () {
+        try {
+            const result = JSON.parse(reader.result);
+            console.log("JSON file parsed successfully");
+            loadstate(result);
+        } catch (e) {
+            console.error("Error parsing JSON file:", e);
+            alert("Error loading character sheet. The file might be corrupted or in an invalid format.");
+        }
+    };
+
     reader.onerror = function () {
-        console.log(reader.error);
-        alert("Error loading file")
+        console.error("Error reading file");
+        alert("Error reading file");
     };
 } async function CheckSaved() {
     return new Promise((resolve) => {
@@ -2201,8 +2040,3 @@ function updatemodifier() {
 
     document.body.insertBefore(tooltipsdiv, null);
 }
-
-
-
-
-
