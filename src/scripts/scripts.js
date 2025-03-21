@@ -1725,7 +1725,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     update()
 
-    addEventListener("keydown", checkControl, false);
+    addEventListener("keydown", checkAlt, false);
     createTooltips()
 
 });
@@ -2003,16 +2003,18 @@ function updatemodifier() {
     charges = document.getElementById("currentcharges" + String(num))
     max = document.getElementById("maxcharges" + String(num))
     charges.value = max.value
-} function checkControl(event) {
-    if (event.keyCode == "17" && document.activeElement != document.body) {
+}
+
+function checkAlt(event) {
+    if (event.code === "AltRight" && document.activeElement != document.body) {
         el = document.activeElement
         tooltip = document.getElementById(el.id + "tooltip")
         tooltip.style.opacity = 1 - tooltip.style.opacity
         tooltip.style.zIndex = 1000 - tooltip.style.zIndex
     }
+}
 
-
-} function createTooltips() {
+function createTooltips() {
     const tooltipsdiv = document.createElement("div");
     tooltipsdiv.className = "tooltips"
 
