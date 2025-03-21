@@ -23,13 +23,17 @@ function createFormField(top, left, width, height, name, format, textsize, color
     parentdiv.appendChild(formfield);
     return formfield
 
-} function createText(top, left, height, width, content, fontsize, color, align, parentdiv, addedclass = "") {
+}
+
+function createText(top, left, height, width, content, fontsize, color, align, parentdiv, addedclass = "") {
     const textfield = document.createElement("div");
     textfield.className = "generictext not-selectable" + " " + addedclass + " "
     textfield.style = "--top:" + String(height) + "px; --width:" + String(width) + "px; --left:" + String(left) + "px; --top:" + String(top) + "px; --color:" + String(color) + "; --align:" + String(align) + "; --fontsize:" + String(fontsize) + "px;"
     textfield.textContent = content
     parentdiv.appendChild(textfield);
-} function createButton(top, left, size, initvalue, name, func, parentdiv, addedclass = "") {
+}
+
+function createButton(top, left, size, initvalue, name, func, parentdiv, addedclass = "") {
     const checkbox = document.createElement("div");
     checkbox.className = "genericbutton save" + " " + addedclass + " "
     checkbox.value = initvalue
@@ -37,7 +41,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
     checkbox.style = "--top:" + String(top) + "px; --left:" + String(left) + "px; --size:" + String(size) + "px"
     checkbox.addEventListener("click", func, false)
     parentdiv.appendChild(checkbox);
-} function createCheckmark(top, left, size, initvalue, name, func, parentdiv, addedclass, syncbool) {
+}
+
+function createCheckmark(top, left, size, initvalue, name, func, parentdiv, addedclass, syncbool) {
     const checkbox = document.createElement("div");
     checkbox.className = "checkmarkbutton save " + addedclass + (syncbool ? (" sync") : (""))
     checkbox.value = initvalue
@@ -45,7 +51,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
     checkbox.style = "--top:" + String(top) + "px; --left:" + String(left) + "px; --size:" + String(size) + "px; --textsize:" + String(size - 3) + "px; --lineheight:" + String(size) + "px;"
     checkbox.addEventListener("click", func, false)
     parentdiv.appendChild(checkbox);
-} function createFrame(width, height, top, left, formbool = false, namebool = false, name, page = "index", format = "textarea", addedclass = "") {
+}
+
+function createFrame(width, height, top, left, formbool = false, namebool = false, name, page = "index", format = "textarea", addedclass = "") {
     //Create the parent div
     const maindiv = document.createElement("div");
     maindiv.className = "frame " + addedclass
@@ -114,13 +122,17 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
     const currentDiv = document.getElementById(page);
     document.body.insertBefore(maindiv, null);
-} function createFeaturebox(width, height, bevel, color, top, left, page, addedclass = "") {
+}
+
+function createFeaturebox(width, height, bevel, color, top, left, page, addedclass = "") {
     const div = document.createElement("div");
     div.className = "featurebox" + " " + addedclass + " ";
     div.style = "--width: " + String(width) + "px; --height: " + String(height) + "px; --bevel: " + String(bevel) + "px; --color: #" + String(color) + "; top:" + String(top) + "px; left:" + String(left) + "px;";
     const currentDiv = document.getElementById(page);
     document.body.insertBefore(div, currentDiv);
-} function createScriptedButton(top, left, width, height, content, script, parentdiv, addedclass, textsize = "9", name) {
+}
+
+function createScriptedButton(top, left, width, height, content, script, parentdiv, addedclass, textsize = "9", name) {
     const button = document.createElement("div");
     button.textContent = content
     button.id = name
@@ -129,7 +141,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
     button.draggable = false;
     button.onclick = script
     parentdiv.appendChild(button);
-} function createDiv(top, left, height, width, content, fontsize, color, align, parentdiv, addedclass = "", id) {
+}
+
+function createDiv(top, left, height, width, content, fontsize, color, align, parentdiv, addedclass = "", id) {
     const square = document.createElement("div");
     square.className = "tooltip" + " " + addedclass + " "
     square.style = "--heigth:" + String(height) + "px; --width:" + String(width) + "px; --left:" + String(left) + "px; --top:" + String(top) + "px; --color:" + String(color) + "; --align:" + String(align) + "; --fontsize:" + String(fontsize) + "px;"
@@ -137,7 +151,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
     square.id = id
     parentdiv.appendChild(square);
     return square
-} function createHeaderpage1(top, left) {
+}
+
+function createHeaderpage1(top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "header"
 
@@ -200,7 +216,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
 
 
-} function createHeaderpage2(top, left) {
+}
+
+function createHeaderpage2(top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "header"
 
@@ -239,7 +257,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
 
 
-} function createHeaderpage3(top, left) {
+}
+
+function createHeaderpage3(top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "header"
 
@@ -264,7 +284,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
     createText(top + 92, left + 196, 28, 65, "SPELL SAVE DC", 7, "#000000", "center", maindiv)
     createText(top + 92, left + 309, 28, 65, "SPELL ATTACK BONUS", 7, "#000000", "center", maindiv)
 
-} function createHeaderpage4(top, left) {
+}
+
+function createHeaderpage4(top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "header"
 
@@ -308,7 +330,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
 
 
-} function createHeaderpage5(top, left) {
+}
+
+function createHeaderpage5(top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "header"
 
@@ -347,7 +371,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
 
 
-} function createAbilityBoxes(top, left) {
+}
+
+function createAbilityBoxes(top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "abilityboxes not-selectable"
     maindiv.style = " top:" + String(top) + "px; left:" + String(left) + "px;"
@@ -456,7 +482,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
     const currentDiv = document.getElementById("page1");
     document.body.insertBefore(maindiv, null);
-} function filldarkbox(top, left) {
+}
+
+function filldarkbox(top, left) {
 
     const maindiv = document.createElement("div");
     maindiv.className = "filldarkfeaturebox not-selectable"
@@ -526,7 +554,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
 
 
-} function fillattackandspellcasting(width, height, top, left) {
+}
+
+function fillattackandspellcasting(width, height, top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "fillattackandspellcasting not-selectable"
     maindiv.style = "position:absolute; top:" + String(top) + "px; width:" + String(width) + "px; left:" + String(left) + "px; height:" + String(height - 20) + "px"
@@ -541,7 +571,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
         createFormField(15 + i * 20, 125, 60, 15, "attackdamage" + String(i) + "1", "input", "9", "#dde4ff", "left", maindiv, true, "", true, "")
     }
     createFormField(75, 10, 175, 195, "ATTACKS & SPELLCASTING", "textarea", "12", "#dde4ff", "left", maindiv)
-} function fillEquipmentSlot(top, left, amount, name, parentdiv, addedclass) {
+}
+
+function fillEquipmentSlot(top, left, amount, name, parentdiv, addedclass) {
     for (let i = 0; i < amount; i++) {
         if (name == "armor") {
             createFormField(top + 5 + 45 * i, left + 70, 105, 40, name + String(i) + "name", "input", 20, "#dde4ff", "left", parentdiv, false, "", false, addedclass)
@@ -563,7 +595,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
     }
 
-} function createspellbar(top, left, width, level, parentdiv, version, addedclass) {
+}
+
+function createspellbar(top, left, width, level, parentdiv, version, addedclass) {
     const maindiv = parentdiv
 
 
@@ -595,7 +629,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
     maindiv.appendChild(bar);
 
-} function createspellline(top, left, width, level, parentdiv, name) {
+}
+
+function createspellline(top, left, width, level, parentdiv, name) {
     const line = document.createElement("div");
     line.className = "genericline not-selectable"
     line.alt = "line";
@@ -610,14 +646,18 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
     }
     createFormField(top + 3, left + 10, width - 20, 40 / 3 - 5, name, "input", 8, "#dde4ff", "left", parentdiv)
-} function createChargedAbilityLine(top, left, version, parentdiv, addedclass, name) {
+}
+
+function createChargedAbilityLine(top, left, version, parentdiv, addedclass, name) {
     createFormField(top, left, 20, 15, "maxcharges" + String(version), "input", "10", "#dde4ff", "center", parentdiv, true, "", false, addedclass)
     createFormField(top, left + 25, 55, 15, "abilityname" + String(version), "input", "10", "#dde4ff", "left", parentdiv, false, "", false, addedclass)
     createScriptedButton(top, left + 85, 15, 17, "+1", plusonescript, parentdiv, addedclass, "15", name)
     createScriptedButton(top, left + 101, 15, 17, "-1", minusonescript, parentdiv, addedclass, "15", name)
     createFormField(top, left + 117, 23, 15, "currentcharges" + String(version), "input", "10", "#dde4ff", "center", parentdiv, false, "", false, addedclass)
     createScriptedButton(top, left + 145, 34, 17, "Recover", recoverscript, parentdiv, addedclass, "9", name)
-} function createMainpage(top, left) {
+}
+
+function createMainpage(top, left) {
     createFeaturebox(200, 600, 6, "e7e8e8", top, left, "index")
     createFeaturebox(200, 300, 6, "c5c6c7", top, left + 210, "index")
     filldarkbox(top, left + 210)
@@ -630,7 +670,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
     createHeaderpage1(top - 120, left - 30)
 
 
-} function createSpellPage(top, left) {
+}
+
+function createSpellPage(top, left) {
     //createFrame(620, 760, top, left, false, false, "spellframe", "index", "textarea")
     createHeaderpage2(top - 140, left - 30)
 
@@ -673,7 +715,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
 
     document.body.insertBefore(maindiv, null);
-} function createAttackpage(top, left) {
+}
+
+function createAttackpage(top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "attack page"
 
@@ -848,7 +892,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
     const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
-} function createBackstoryPage(top, left) {
+}
+
+function createBackstoryPage(top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "Backstory page"
 
@@ -869,7 +915,9 @@ function createFormField(top, left, width, height, name, format, textsize, color
 
 
     document.body.insertBefore(maindiv, null);
-} function createInventoryPage(top, left) {
+}
+
+function createInventoryPage(top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "Inventory page"
 
@@ -1104,7 +1152,9 @@ async function savestate() {
         }
         update(); // Update calculations after loading
     }
-} function unpackjson() {
+}
+
+function unpackjson() {
     const file = this.files[0];
     if (!file) {
         console.log("No file selected");
@@ -1760,7 +1810,9 @@ function update(exception) {
     changeSidebar()
 
 
-} function sizeadjust(name) {
+}
+
+function sizeadjust(name) {
     //adjust formfield textsize on the fly
     let textArea = document.getElementById(name);
     var style = window.getComputedStyle(textArea, null).getPropertyValue('font-size');
@@ -1781,7 +1833,9 @@ function update(exception) {
     }
 
 
-} function sizeadjustinput(id, boxlength, startfont) {
+}
+
+function sizeadjustinput(id, boxlength, startfont) {
     let invisdiv = document.getElementById("invisdiv");
     boxlength = parseInt(boxlength)
     if (!invisdiv) {
@@ -1810,7 +1864,9 @@ function update(exception) {
         }
     }
 
-} function updategenericbuttons() {
+}
+
+function updategenericbuttons() {
     buttons = document.getElementsByClassName("genericbutton")
     for (let i = 0; i < buttons.length; i++) {
         button = buttons[i]
@@ -1823,7 +1879,9 @@ function update(exception) {
         if (button.value == 0) { button.textContent = ""; }
         else if (button.value == 1) { button.textContent = "◆"; }
     }
-} function updateCalculatedFields() {
+}
+
+function updateCalculatedFields() {
     fields = document.getElementsByClassName("calculated")
     for (let i = 0; i < fields.length; i++) {
         field = fields[i]
@@ -1869,7 +1927,9 @@ function updatemodifier() {
     if (isNaN(modifier)) { modifier = "?" }
     document.getElementById(this.id.slice(0, -5) + "mod").value = modifier
 
-} function skillprof() {
+}
+
+function skillprof() {
     if (this.value == 0) {
         this.value = 1
         this.style.setProperty("background-color", "grey")
@@ -1879,7 +1939,9 @@ function updatemodifier() {
         this.style.setProperty('background-color', 'white')
     }
     update()
-} function skillexp() {
+}
+
+function skillexp() {
     if (this.value == 0) {
         this.value = 1
         this.style.setProperty("background-color", "grey")
@@ -1889,7 +1951,9 @@ function updatemodifier() {
         this.style.setProperty('background-color', 'white')
     }
     update()
-} function genericbuttonclick() {
+}
+
+function genericbuttonclick() {
     if (this.value == 0) {
         this.value = 1
         this.style.setProperty("background-color", "grey")
@@ -1899,7 +1963,9 @@ function updatemodifier() {
         this.style.setProperty("background-color", "#dde4ff")
     }
     update()
-} function genericcheckmarkclick() {
+}
+
+function genericcheckmarkclick() {
     if (this.value == 0) {
         this.value = 1
         //this.style.setProperty("background-color", "grey")
@@ -1912,22 +1978,30 @@ function updatemodifier() {
     }
     updateSyncedFields(this)
     update()
-} function entercalc() {
+}
+
+function entercalc() {
     show = this.value
     calculation = this.textContent
     this.value = calculation
     this.textContent = show
-} function unfocusfunc(el, condition) {
+}
+
+function unfocusfunc(el, condition) {
     if (condition.includes("calc")) { exitcalc(el) }
     if (condition.includes("sync")) { updateSyncedFields(el) }
     if (condition.includes("update")) { update() }
 
-} function exitcalc(el) {
+}
+
+function exitcalc(el) {
     calculation = el.value
     show = el.textContent
     el.value = show
     el.textContent = calculation
-} function updateSyncedFields(field) {
+}
+
+function updateSyncedFields(field) {
     syncedfields = document.getElementsByClassName("sync")
     content = field.textContent
     value = field.value
@@ -1937,7 +2011,9 @@ function updatemodifier() {
             syncedfields[i].value = value
         }
     }
-} function changeSidebar() {
+}
+
+function changeSidebar() {
     el = document.getElementById("attacksheetdropdown")
     sidebarElements = document.getElementsByClassName("sidebar")
     for (let i = 0; i < sidebarElements.length; i++) {
@@ -1952,7 +2028,9 @@ function updatemodifier() {
         sidebarElements[i].style.zIndex = "100"
         if (sidebarElements[i].className.includes("spellbar")) { sidebarElements[i].style.zIndex = "99" }
     }
-} function updateLookups() {
+}
+
+function updateLookups() {
     results = document.getElementsByClassName("lookup")
     for (let i = 0; i < results.length; i++) {
         result = results[i]
@@ -1976,29 +2054,39 @@ function updatemodifier() {
 
         //acidsplash:{components:"V,S",duration:"Instantaneous",level:"0",range:"60 ft",castingtime:"1 Action",school:"Conjuration",description:"ddd"}
     }
-} function healscript() {
+}
+
+function healscript() {
     hp = document.getElementById("currenthitpoints1");
     total = document.getElementById("totalhitpoints1");
     hp.value = total.value;
     unfocusfunc(hp, "sync update")
-} function healscriptcompanion() {
+}
+
+function healscriptcompanion() {
     hp = document.getElementById("currenthitpointscompanion");
     total = document.getElementById("totalhitpointscompanion");
     hp.value = total.value;
     unfocusfunc(hp, "sync update")
-} function plusonescript() {
+}
+
+function plusonescript() {
     num = this.id.slice(-1)
     charges = document.getElementById("currentcharges" + String(num))
     max = document.getElementById("maxcharges" + String(num))
     charges.value = Number(charges.value) + 1
 
-} function minusonescript() {
+}
+
+function minusonescript() {
     num = this.id.slice(-1)
     charges = document.getElementById("currentcharges" + String(num))
     max = document.getElementById("maxcharges" + String(num))
     charges.value = Number(charges.value) - 1
 
-} function recoverscript() {
+}
+
+function recoverscript() {
     num = this.id.slice(-1)
     charges = document.getElementById("currentcharges" + String(num))
     max = document.getElementById("maxcharges" + String(num))
