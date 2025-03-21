@@ -523,17 +523,17 @@ rules for ability boxes*/
 /* fonts and other extra's*/
 @font-face {
   font-family: Scalasans;
-  src: url(assets/otf/scalasans.otf);
+  src: url(../../assets/otf/scalasans.otf);
 }
 
 @font-face {
   font-family: Scalasansbold;
-  src: url(assets/otf/scala-sans-bold.otf);
+  src: url(../../assets/otf/scala-sans-bold.otf);
 }
 
 @font-face {
   font-family: Scalasanslight;
-  src: url(assets/otf/scala-sans-light.otf);
+  src: url(../../assets/otf/scala-sans-light.otf);
 }
 
 .not-selectable {

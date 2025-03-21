@@ -75,7 +75,7 @@ function createFormField(top, left, width, height, name, format, textsize, color
             line.src = "assets/svg/HorizontalLine.svg";
         }
         else {
-            line.src = "assets/svg/VerticalLine.svg";
+            line.src = "assets/svg/verticalLine.svg";
         }
         line.alt = "line";
         line.draggable = false;
