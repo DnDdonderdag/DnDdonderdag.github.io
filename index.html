@@ -6,13 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Character Sheet</title>
   <link rel="stylesheet" href="src/css/style.css">
-  <script src="src/scripts/scripts.js"></script>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <!-- Load scripts in dependency order -->
+  <script src="src/scripts/modules/helpers.js"></script>
+  <script src="src/scripts/modules/ui-components.js"></script>
+  <script src="src/scripts/modules/headers.js"></script>
+  <script src="src/scripts/modules/sheet-elements.js"></script>
+  <script src="src/scripts/modules/page-layouts.js"></script>
+  <script src="src/scripts/modules/data-manager.js"></script>
+  <script src="src/scripts/main.js"></script>
 </head>
 
 <body>
-
   <div id="index"></div>
-
 </body>
 
 </html>
