@@ -40,7 +40,7 @@ async function savestate() {
 
     // Create a download link and trigger it
     const fileName = saveobj.charactername ?
-        `${saveobj.charactername.replace(/\s+/g, '_')}_character_sheet.json` :
+        `${saveobj.charactername.replace(/\s+/g, '_')}.json` :
         'dnd_character_sheet.json';
 
     const downloadLink = document.createElement('a');
