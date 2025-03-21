@@ -5,13 +5,6 @@
  * The code is organized into modules that can be easily separated into different files.
  */
 
-/*
- * DnD Character Sheet Application
- * 
- * This file contains all the functions for creating and managing a DnD character sheet.
- * The code is organized into modules that can be easily separated into different files.
- */
-
 /**************************************************
  * MODULE 0: HELPER FUNCTIONS
  * Utility functions used throughout the application
