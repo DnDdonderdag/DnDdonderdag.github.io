@@ -1,4 +1,375 @@
-//asset creation
+/*
+ * DnD Character Sheet Application
+ * 
+ * This file contains all the functions for creating and managing a DnD character sheet.
+ * The code is organized into modules that can be easily separated into different files.
+ */
+
+/*
+ * DnD Character Sheet Application
+ * 
+ * This file contains all the functions for creating and managing a DnD character sheet.
+ * The code is organized into modules that can be easily separated into different files.
+ */
+
+/**************************************************
+ * MODULE 0: HELPER FUNCTIONS
+ * Utility functions used throughout the application
+ **************************************************/
+
+function update(exception) {
+    //updates lookups
+    if (exception != "typing") { updateLookups() }
+
+    //updates the sizes of textareas so they fit in their frame
+    var ids = document.getElementsByClassName("sizeadjust")
+    for (let i = 0; i < ids.length; i++) {
+        sizeadjust(ids[i].id)
+    }
+
+    //updates the sizes of inputareas so they fit in their frame
+    var ids = document.getElementsByClassName("sizeadjustinput")
+    for (let i = 0; i < ids.length; i++) {
+
+        boxlength = window.getComputedStyle(ids[i]).getPropertyValue("--boxlength")
+        startfont = window.getComputedStyle(ids[i]).getPropertyValue("--startfont")
+        sizeadjustinput(ids[i].id, boxlength, startfont)
+    }
+
+    //updates all the generic buttons
+    updategenericbuttons()
+    //updates all the calculated fields
+    if (exception != "typing") { updateCalculatedFields() }
+    //updates the sidebar to reflect chosen archetype
+    changeSidebar()
+
+
+}
+
+function sizeadjust(name) {
+    //adjust formfield textsize on the fly
+    let textArea = document.getElementById(name);
+    var style = window.getComputedStyle(textArea, null).getPropertyValue('font-size');
+    var fontSize = parseFloat(style);
+    while (fontSize < 14) {
+        var style = window.getComputedStyle(textArea, null).getPropertyValue('font-size');
+        var fontSize = parseFloat(style);
+        textArea.style.fontSize = fontSize + 0.1 + 'px'
+        if (textArea.clientHeight < textArea.scrollHeight) {
+            textArea.style.fontSize = fontSize - 0.1 + 'px';
+            break
+        }
+    }
+    while (textArea.clientHeight < textArea.scrollHeight) {
+        var style = window.getComputedStyle(textArea, null).getPropertyValue('font-size');
+        var fontSize = parseFloat(style);
+        textArea.style.fontSize = fontSize - 0.1 + 'px';
+    }
+
+
+}
+
+function sizeadjustinput(id, boxlength, startfont) {
+    let invisdiv = document.getElementById("invisdiv");
+    boxlength = parseInt(boxlength)
+    if (!invisdiv) {
+        const invisdiv = document.createElement("div");
+        invisdiv.id = "invisdiv"
+        const currentDiv = document.getElementById("index");
+        document.body.insertBefore(invisdiv, null);
+    } else {
+        let inputarea = document.getElementById(id);
+        var style = window.getComputedStyle(inputarea, null).getPropertyValue('font-size');
+        var fontSize = style
+        invisdiv.style.fontSize = fontSize
+        inputarea.style.fontSize = fontSize
+        invisdiv.innerText = inputarea.value
+        while (invisdiv.clientWidth < boxlength && Number(fontSize.slice(0, -2)) < startfont) {
+            var style = window.getComputedStyle(inputarea, null).getPropertyValue('font-size');
+            var fontSize = String(Number(style.slice(0, -2)) + 0.1) + "px"
+            invisdiv.style.fontSize = fontSize
+            inputarea.style.fontSize = fontSize
+        }
+        while (invisdiv.clientWidth > boxlength) {
+            var style = window.getComputedStyle(inputarea, null).getPropertyValue('font-size');
+            var fontSize = String(Number(style.slice(0, -2)) - 0.1) + "px"
+            invisdiv.style.fontSize = fontSize
+            inputarea.style.fontSize = fontSize
+        }
+    }
+
+}
+
+function updategenericbuttons() {
+    buttons = document.getElementsByClassName("genericbutton")
+    for (let i = 0; i < buttons.length; i++) {
+        button = buttons[i]
+        if (button.value == 0) { button.style.setProperty('background-color', '#dde4ff'); }
+        else if (button.value == 1) { button.style.setProperty('background-color', 'grey'); }
+    }
+    checkmarks = document.getElementsByClassName("checkmarkbutton")
+    for (let i = 0; i < checkmarks.length; i++) {
+        button = checkmarks[i]
+        if (button.value == 0) { button.textContent = ""; }
+        else if (button.value == 1) { button.textContent = "◆"; }
+    }
+}
+
+function updateCalculatedFields() {
+    fields = document.getElementsByClassName("calculated")
+    for (let i = 0; i < fields.length; i++) {
+        field = fields[i]
+        calculation = field.textContent
+        count = (calculation.match(/\[/g) || []).length;
+        for (let i = 0; i < count; i++) {
+            start = calculation.indexOf("[")
+            finish = calculation.indexOf("]")
+            replacementid = calculation.slice(start + 1, finish)
+            try {
+                replacementtext = document.getElementById(replacementid).value
+                replacement = (replacementtext == "") ? (0) : (parseInt(replacementtext))
+                calculation = calculation.replace(calculation.slice(start, finish + 1), String(replacement))
+            }
+            catch { replacementtext = "" }
+
+        }
+        calculation = calculation.replaceAll("--", "+")
+        if (calculation == "") { field.value = "" }
+        else {
+            try {
+                val = eval(calculation)
+                if (isNaN(val)) { field.value = calculation }
+                else { field.value = eval(calculation) }
+            } catch (error) {
+                field.value = calculation
+            }
+        }
+
+    }
+
+}
+
+function updatemodifier() {
+    //this function updates the modifier value based on the value of the score. see createabilityboxes.
+    var score = Number(this.value)
+    var modifier = Math.floor((score - 10) / 2)
+    if (modifier >= 0) {
+        modifier = "+" + String(modifier)
+    } else {
+        modifier = String(modifier)
+    }
+    if (isNaN(modifier)) { modifier = "?" }
+    document.getElementById(this.id.slice(0, -5) + "mod").value = modifier
+
+}
+
+function skillprof() {
+    if (this.value == 0) {
+        this.value = 1
+        this.style.setProperty("background-color", "grey")
+    }
+    else if (this.value == 1) {
+        this.value = 0
+        this.style.setProperty('background-color', 'white')
+    }
+    update()
+}
+
+function skillexp() {
+    if (this.value == 0) {
+        this.value = 1
+        this.style.setProperty("background-color", "grey")
+    }
+    else if (this.value == 1) {
+        this.value = 0
+        this.style.setProperty('background-color', 'white')
+    }
+    update()
+}
+
+function genericbuttonclick() {
+    if (this.value == 0) {
+        this.value = 1
+        this.style.setProperty("background-color", "grey")
+    }
+    else if (this.value == 1) {
+        this.value = 0
+        this.style.setProperty("background-color", "#dde4ff")
+    }
+    update()
+}
+
+function genericcheckmarkclick() {
+    if (this.value == 0) {
+        this.value = 1
+        //this.style.setProperty("background-color", "grey")
+        this.textContent = "◆"
+    }
+    else if (this.value = 1) {
+        this.value = 0
+        // this.style.setProperty('background-color', '#dde4ff')
+        this.textContent = ""
+    }
+    updateSyncedFields(this)
+    update()
+}
+
+function entercalc() {
+    show = this.value
+    calculation = this.textContent
+    this.value = calculation
+    this.textContent = show
+}
+
+function unfocusfunc(el, condition) {
+    if (condition.includes("calc")) { exitcalc(el) }
+    if (condition.includes("sync")) { updateSyncedFields(el) }
+    if (condition.includes("update")) { update() }
+
+}
+
+function exitcalc(el) {
+    calculation = el.value
+    show = el.textContent
+    el.value = show
+    el.textContent = calculation
+}
+
+function updateSyncedFields(field) {
+    syncedfields = document.getElementsByClassName("sync")
+    content = field.textContent
+    value = field.value
+    for (let i = 0; i < syncedfields.length; i++) {
+        if (syncedfields[i].id.slice(0, -1) == field.id.slice(0, -1)) {
+            syncedfields[i].textContent = content
+            syncedfields[i].value = value
+        }
+    }
+}
+
+function changeSidebar() {
+    el = document.getElementById("attacksheetdropdown")
+    sidebarElements = document.getElementsByClassName("sidebar")
+    for (let i = 0; i < sidebarElements.length; i++) {
+        sidebarElements[i].style.opacity = "0"
+        sidebarElements[i].disabled = true;
+        sidebarElements[i].style.zIndex = "-100"
+    }
+    sidebarElements = document.getElementsByClassName(el.value)
+    for (let i = 0; i < sidebarElements.length; i++) {
+        sidebarElements[i].style.opacity = "1"
+        sidebarElements[i].disabled = false;
+        sidebarElements[i].style.zIndex = "100"
+        if (sidebarElements[i].className.includes("spellbar")) { sidebarElements[i].style.zIndex = "99" }
+    }
+}
+
+function updateLookups() {
+    results = document.getElementsByClassName("lookup")
+    for (let i = 0; i < results.length; i++) {
+        result = results[i]
+        entry = document.getElementById("lookupentry" + result.id.slice(-3))
+        query = entry.value.toLowerCase().replaceAll(" ", "").replaceAll("-", "").replaceAll("'", "").replaceAll("/", "")
+        output = ""
+        if (query != "") {
+            try {
+                output += entry.value + "\n"
+                output += "Level: " + spellObject[query]["level"] + "\n"
+                output += "Casting Time: " + spellObject[query]["castingtime"] + "\n"
+                output += "Range: " + spellObject[query]["range"] + "\n"
+                output += "Components: " + spellObject[query]["components"] + "\n"
+                output += "Duration: " + spellObject[query]["duration"] + "\n"
+                output += "\n " + spellObject[query]["description"]
+
+            }
+            catch { output = "not recognized" }
+        }
+        result.value = output
+
+        //acidsplash:{components:"V,S",duration:"Instantaneous",level:"0",range:"60 ft",castingtime:"1 Action",school:"Conjuration",description:"ddd"}
+    }
+}
+
+function healscript() {
+    hp = document.getElementById("currenthitpoints1");
+    total = document.getElementById("totalhitpoints1");
+    hp.value = total.value;
+    unfocusfunc(hp, "sync update")
+}
+
+function healscriptcompanion() {
+    hp = document.getElementById("currenthitpointscompanion");
+    total = document.getElementById("totalhitpointscompanion");
+    hp.value = total.value;
+    unfocusfunc(hp, "sync update")
+}
+
+function plusonescript() {
+    num = this.id.slice(-1)
+    charges = document.getElementById("currentcharges" + String(num))
+    max = document.getElementById("maxcharges" + String(num))
+    charges.value = Number(charges.value) + 1
+
+}
+
+function minusonescript() {
+    num = this.id.slice(-1)
+    charges = document.getElementById("currentcharges" + String(num))
+    max = document.getElementById("maxcharges" + String(num))
+    charges.value = Number(charges.value) - 1
+
+}
+
+function recoverscript() {
+    num = this.id.slice(-1)
+    charges = document.getElementById("currentcharges" + String(num))
+    max = document.getElementById("maxcharges" + String(num))
+    charges.value = max.value
+}
+
+function checkAlt(event) {
+    if (event.code === "AltRight" && document.activeElement != document.body) {
+        el = document.activeElement
+        tooltip = document.getElementById(el.id + "tooltip")
+        tooltip.style.opacity = 1 - tooltip.style.opacity
+        tooltip.style.zIndex = 1000 - tooltip.style.zIndex
+    }
+}
+
+function createTooltips() {
+    const tooltipsdiv = document.createElement("div");
+    tooltipsdiv.className = "tooltips"
+
+    if (!invisdiv) {
+        const invisdiv = document.createElement("div");
+        invisdiv.id = "invisdiv"
+        const currentDiv = document.getElementById("index");
+        document.body.insertBefore(invisdiv, null);
+    }
+
+    fields = document.getElementsByClassName("save")
+    for (let i = 0; i < fields.length; i++) {
+
+
+
+
+        field = fields[i]
+        tooltip = createDiv(field.getBoundingClientRect().top, field.getBoundingClientRect().left, 20, 30, field.id, 12, "#e7e8e8", "left", tooltipsdiv, "", field.id + 'tooltip')
+        tooltip.style.opacity = 0
+        tooltip.style.zIndex = -1
+        invisdiv.style.fontSize = "12px"
+        invisdiv.innerText = tooltip.textContent
+        tooltip.style.width = invisdiv.clientWidth + "px"
+    }
+
+    document.body.insertBefore(tooltipsdiv, null);
+}
+
+/**************************************************
+ * MODULE 1: UI COMPONENT CREATION
+ * Core functions for creating UI elements
+ **************************************************/
+
 function createFormField(top, left, width, height, name, format, textsize, color, align, parentdiv, calculated = false, initcalculation = "", syncbool = false, addedclass = "") {
     const formfield = document.createElement(format);
     if (addedclass.includes("exceptsize")) {
@@ -152,6 +523,11 @@ function createDiv(top, left, height, width, content, fontsize, color, align, pa
     parentdiv.appendChild(square);
     return square
 }
+
+/**************************************************
+ * MODULE 2: HEADER COMPONENTS
+ * Functions for creating page headers
+ **************************************************/
 
 function createHeaderpage1(top, left) {
     const maindiv = document.createElement("div");
@@ -372,6 +748,11 @@ function createHeaderpage5(top, left) {
 
 
 }
+
+/**************************************************
+ * MODULE 3: CHARACTER SHEET ELEMENTS
+ * Functions for creating specific character sheet components
+ **************************************************/
 
 function createAbilityBoxes(top, left) {
     const maindiv = document.createElement("div");
@@ -656,6 +1037,11 @@ function createChargedAbilityLine(top, left, version, parentdiv, addedclass, nam
     createFormField(top, left + 117, 23, 15, "currentcharges" + String(version), "input", "10", "#dde4ff", "center", parentdiv, false, "", false, addedclass)
     createScriptedButton(top, left + 145, 34, 17, "Recover", recoverscript, parentdiv, addedclass, "9", name)
 }
+
+/**************************************************
+ * MODULE 4: PAGE LAYOUTS
+ * Functions for creating complete page layouts
+ **************************************************/
 
 function createMainpage(top, left) {
     createFeaturebox(200, 600, 6, "e7e8e8", top, left, "index")
@@ -1012,9 +1398,11 @@ function createInventoryPage(top, left) {
     document.body.insertBefore(maindiv, null);
 }
 
+/**************************************************
+ * MODULE 5: DATA MANAGEMENT
+ * Functions for saving, loading, and managing character data
+ **************************************************/
 
-
-//saving and loading functions
 async function savestate() {
     let savelist = document.getElementsByClassName("save");
     let saveobj = {};
@@ -1074,7 +1462,9 @@ async function savestate() {
     }, 100);
 
     console.log("Character saved to file: " + fileName);
-} async function loadstate(result) {
+}
+
+async function loadstate(result) {
     let loadAction = true;
 
     if (!(await CheckSaved())) {
@@ -1181,7 +1571,9 @@ function unpackjson() {
         console.error("Error reading file");
         alert("Error reading file");
     };
-} async function CheckSaved() {
+}
+
+async function CheckSaved() {
     return new Promise((resolve) => {
         fileSelector = document.getElementById('loadstate');
         const file = fileSelector.files[0];
@@ -1211,38 +1603,19 @@ function unpackjson() {
             alert("Error loading file")
         };
     })
-} window.onbeforeunload = function () {
+}
+
+/**************************************************
+ * MODULE 6: EVENT HANDLERS
+ * Event handlers and initialization functions
+ **************************************************/
+
+window.onbeforeunload = function () {
     testing = true
     if (!testing) { return 'There is unsaved data.'; }
 
-}; async function copyToClipboard(textToCopy) {
-    // Navigator clipboard api needs a secure context (https)
-    if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(textToCopy);
-    } else {
-        // Use the 'out of viewport hidden text area' trick
-        const textArea = document.createElement("textarea");
-        textArea.value = textToCopy;
-
-        // Move textarea out of the viewport so it's not visible
-        textArea.style.position = "absolute";
-        textArea.style.left = "-999999px";
-
-        document.body.prepend(textArea);
-        textArea.select();
-
-        try {
-            document.execCommand('copy');
-        } catch (error) {
-            console.error(error);
-        } finally {
-            textArea.remove();
-        }
-    }
 }
 
-
-//activates on loading of the page, loads all assests.
 document.addEventListener('DOMContentLoaded', function () {
     spellObject = {
         antagonize: { components: "V,S,M", duration: "Instantaneous", level: "3", range: "30 ft", castingtime: "1 Action", school: "Enchantment", description: "You whisper magical words that antagonize one creature of your choice within range. The target must make a Wisdom saving throw. On a failed save, the target takes 4d4 psychic damage and must immediately use its reaction to make a melee attack against another creature of your choice that you can see. If the target can’t make this attack (for example, because there is no one within its reach or because its reaction is unavailable), the target instead has disadvantage on the next attack roll it makes before the start of your next turn. On a successful save, the target takes half as much damage only.\n\nAt Higher Levels. When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d4 for each slot level above 3rd." },
@@ -1778,355 +2151,4 @@ document.addEventListener('DOMContentLoaded', function () {
     addEventListener("keydown", checkAlt, false);
     createTooltips()
 
-});
-
-
-
-//updating functions
-function update(exception) {
-    //updates lookups
-    if (exception != "typing") { updateLookups() }
-
-    //updates the sizes of textareas so they fit in their frame
-    var ids = document.getElementsByClassName("sizeadjust")
-    for (let i = 0; i < ids.length; i++) {
-        sizeadjust(ids[i].id)
-    }
-
-    //updates the sizes of inputareas so they fit in their frame
-    var ids = document.getElementsByClassName("sizeadjustinput")
-    for (let i = 0; i < ids.length; i++) {
-
-        boxlength = window.getComputedStyle(ids[i]).getPropertyValue("--boxlength")
-        startfont = window.getComputedStyle(ids[i]).getPropertyValue("--startfont")
-        sizeadjustinput(ids[i].id, boxlength, startfont)
-    }
-
-    //updates all the generic buttons
-    updategenericbuttons()
-    //updates all the calculated fields
-    if (exception != "typing") { updateCalculatedFields() }
-    //updates the sidebar to reflect chosen archetype
-    changeSidebar()
-
-
-}
-
-function sizeadjust(name) {
-    //adjust formfield textsize on the fly
-    let textArea = document.getElementById(name);
-    var style = window.getComputedStyle(textArea, null).getPropertyValue('font-size');
-    var fontSize = parseFloat(style);
-    while (fontSize < 14) {
-        var style = window.getComputedStyle(textArea, null).getPropertyValue('font-size');
-        var fontSize = parseFloat(style);
-        textArea.style.fontSize = fontSize + 0.1 + 'px'
-        if (textArea.clientHeight < textArea.scrollHeight) {
-            textArea.style.fontSize = fontSize - 0.1 + 'px';
-            break
-        }
-    }
-    while (textArea.clientHeight < textArea.scrollHeight) {
-        var style = window.getComputedStyle(textArea, null).getPropertyValue('font-size');
-        var fontSize = parseFloat(style);
-        textArea.style.fontSize = fontSize - 0.1 + 'px';
-    }
-
-
-}
-
-function sizeadjustinput(id, boxlength, startfont) {
-    let invisdiv = document.getElementById("invisdiv");
-    boxlength = parseInt(boxlength)
-    if (!invisdiv) {
-        const invisdiv = document.createElement("div");
-        invisdiv.id = "invisdiv"
-        const currentDiv = document.getElementById("index");
-        document.body.insertBefore(invisdiv, null);
-    } else {
-        let inputarea = document.getElementById(id);
-        var style = window.getComputedStyle(inputarea, null).getPropertyValue('font-size');
-        var fontSize = style
-        invisdiv.style.fontSize = fontSize
-        inputarea.style.fontSize = fontSize
-        invisdiv.innerText = inputarea.value
-        while (invisdiv.clientWidth < boxlength && Number(fontSize.slice(0, -2)) < startfont) {
-            var style = window.getComputedStyle(inputarea, null).getPropertyValue('font-size');
-            var fontSize = String(Number(style.slice(0, -2)) + 0.1) + "px"
-            invisdiv.style.fontSize = fontSize
-            inputarea.style.fontSize = fontSize
-        }
-        while (invisdiv.clientWidth > boxlength) {
-            var style = window.getComputedStyle(inputarea, null).getPropertyValue('font-size');
-            var fontSize = String(Number(style.slice(0, -2)) - 0.1) + "px"
-            invisdiv.style.fontSize = fontSize
-            inputarea.style.fontSize = fontSize
-        }
-    }
-
-}
-
-function updategenericbuttons() {
-    buttons = document.getElementsByClassName("genericbutton")
-    for (let i = 0; i < buttons.length; i++) {
-        button = buttons[i]
-        if (button.value == 0) { button.style.setProperty('background-color', '#dde4ff'); }
-        else if (button.value == 1) { button.style.setProperty('background-color', 'grey'); }
-    }
-    checkmarks = document.getElementsByClassName("checkmarkbutton")
-    for (let i = 0; i < checkmarks.length; i++) {
-        button = checkmarks[i]
-        if (button.value == 0) { button.textContent = ""; }
-        else if (button.value == 1) { button.textContent = "◆"; }
-    }
-}
-
-function updateCalculatedFields() {
-    fields = document.getElementsByClassName("calculated")
-    for (let i = 0; i < fields.length; i++) {
-        field = fields[i]
-        calculation = field.textContent
-        count = (calculation.match(/\[/g) || []).length;
-        for (let i = 0; i < count; i++) {
-            start = calculation.indexOf("[")
-            finish = calculation.indexOf("]")
-            replacementid = calculation.slice(start + 1, finish)
-            try {
-                replacementtext = document.getElementById(replacementid).value
-                replacement = (replacementtext == "") ? (0) : (parseInt(replacementtext))
-                calculation = calculation.replace(calculation.slice(start, finish + 1), String(replacement))
-            }
-            catch { replacementtext = "" }
-
-        }
-        calculation = calculation.replaceAll("--", "+")
-        if (calculation == "") { field.value = "" }
-        else {
-            try {
-                val = eval(calculation)
-                if (isNaN(val)) { field.value = calculation }
-                else { field.value = eval(calculation) }
-            } catch (error) {
-                field.value = calculation
-            }
-        }
-
-    }
-
-}
-//listening functions
-function updatemodifier() {
-    //this function updates the modifier value based on the value of the score. see createabilityboxes.
-    var score = Number(this.value)
-    var modifier = Math.floor((score - 10) / 2)
-    if (modifier >= 0) {
-        modifier = "+" + String(modifier)
-    } else {
-        modifier = String(modifier)
-    }
-    if (isNaN(modifier)) { modifier = "?" }
-    document.getElementById(this.id.slice(0, -5) + "mod").value = modifier
-
-}
-
-function skillprof() {
-    if (this.value == 0) {
-        this.value = 1
-        this.style.setProperty("background-color", "grey")
-    }
-    else if (this.value == 1) {
-        this.value = 0
-        this.style.setProperty('background-color', 'white')
-    }
-    update()
-}
-
-function skillexp() {
-    if (this.value == 0) {
-        this.value = 1
-        this.style.setProperty("background-color", "grey")
-    }
-    else if (this.value = 1) {
-        this.value = 0
-        this.style.setProperty('background-color', 'white')
-    }
-    update()
-}
-
-function genericbuttonclick() {
-    if (this.value == 0) {
-        this.value = 1
-        this.style.setProperty("background-color", "grey")
-    }
-    else if (this.value = 1) {
-        this.value = 0
-        this.style.setProperty("background-color", "#dde4ff")
-    }
-    update()
-}
-
-function genericcheckmarkclick() {
-    if (this.value == 0) {
-        this.value = 1
-        //this.style.setProperty("background-color", "grey")
-        this.textContent = "◆"
-    }
-    else if (this.value = 1) {
-        this.value = 0
-        // this.style.setProperty('background-color', '#dde4ff')
-        this.textContent = ""
-    }
-    updateSyncedFields(this)
-    update()
-}
-
-function entercalc() {
-    show = this.value
-    calculation = this.textContent
-    this.value = calculation
-    this.textContent = show
-}
-
-function unfocusfunc(el, condition) {
-    if (condition.includes("calc")) { exitcalc(el) }
-    if (condition.includes("sync")) { updateSyncedFields(el) }
-    if (condition.includes("update")) { update() }
-
-}
-
-function exitcalc(el) {
-    calculation = el.value
-    show = el.textContent
-    el.value = show
-    el.textContent = calculation
-}
-
-function updateSyncedFields(field) {
-    syncedfields = document.getElementsByClassName("sync")
-    content = field.textContent
-    value = field.value
-    for (let i = 0; i < syncedfields.length; i++) {
-        if (syncedfields[i].id.slice(0, -1) == field.id.slice(0, -1)) {
-            syncedfields[i].textContent = content
-            syncedfields[i].value = value
-        }
-    }
-}
-
-function changeSidebar() {
-    el = document.getElementById("attacksheetdropdown")
-    sidebarElements = document.getElementsByClassName("sidebar")
-    for (let i = 0; i < sidebarElements.length; i++) {
-        sidebarElements[i].style.opacity = "0"
-        sidebarElements[i].disabled = true;
-        sidebarElements[i].style.zIndex = "-100"
-    }
-    sidebarElements = document.getElementsByClassName(el.value)
-    for (let i = 0; i < sidebarElements.length; i++) {
-        sidebarElements[i].style.opacity = "1"
-        sidebarElements[i].disabled = false;
-        sidebarElements[i].style.zIndex = "100"
-        if (sidebarElements[i].className.includes("spellbar")) { sidebarElements[i].style.zIndex = "99" }
-    }
-}
-
-function updateLookups() {
-    results = document.getElementsByClassName("lookup")
-    for (let i = 0; i < results.length; i++) {
-        result = results[i]
-        entry = document.getElementById("lookupentry" + result.id.slice(-3))
-        query = entry.value.toLowerCase().replaceAll(" ", "").replaceAll("-", "").replaceAll("'", "").replaceAll("/", "")
-        output = ""
-        if (query != "") {
-            try {
-                output += entry.value + "\n"
-                output += "Level: " + spellObject[query]["level"] + "\n"
-                output += "Casting Time: " + spellObject[query]["castingtime"] + "\n"
-                output += "Range: " + spellObject[query]["range"] + "\n"
-                output += "Components: " + spellObject[query]["components"] + "\n"
-                output += "Duration: " + spellObject[query]["duration"] + "\n"
-                output += "\n " + spellObject[query]["description"]
-
-            }
-            catch { output = "not recognized" }
-        }
-        result.value = output
-
-        //acidsplash:{components:"V,S",duration:"Instantaneous",level:"0",range:"60 ft",castingtime:"1 Action",school:"Conjuration",description:"ddd"}
-    }
-}
-
-function healscript() {
-    hp = document.getElementById("currenthitpoints1");
-    total = document.getElementById("totalhitpoints1");
-    hp.value = total.value;
-    unfocusfunc(hp, "sync update")
-}
-
-function healscriptcompanion() {
-    hp = document.getElementById("currenthitpointscompanion");
-    total = document.getElementById("totalhitpointscompanion");
-    hp.value = total.value;
-    unfocusfunc(hp, "sync update")
-}
-
-function plusonescript() {
-    num = this.id.slice(-1)
-    charges = document.getElementById("currentcharges" + String(num))
-    max = document.getElementById("maxcharges" + String(num))
-    charges.value = Number(charges.value) + 1
-
-}
-
-function minusonescript() {
-    num = this.id.slice(-1)
-    charges = document.getElementById("currentcharges" + String(num))
-    max = document.getElementById("maxcharges" + String(num))
-    charges.value = Number(charges.value) - 1
-
-}
-
-function recoverscript() {
-    num = this.id.slice(-1)
-    charges = document.getElementById("currentcharges" + String(num))
-    max = document.getElementById("maxcharges" + String(num))
-    charges.value = max.value
-}
-
-function checkAlt(event) {
-    if (event.code === "AltRight" && document.activeElement != document.body) {
-        el = document.activeElement
-        tooltip = document.getElementById(el.id + "tooltip")
-        tooltip.style.opacity = 1 - tooltip.style.opacity
-        tooltip.style.zIndex = 1000 - tooltip.style.zIndex
-    }
-}
-
-function createTooltips() {
-    const tooltipsdiv = document.createElement("div");
-    tooltipsdiv.className = "tooltips"
-
-    if (!invisdiv) {
-        const invisdiv = document.createElement("div");
-        invisdiv.id = "invisdiv"
-        const currentDiv = document.getElementById("index");
-        document.body.insertBefore(invisdiv, null);
-    }
-
-    fields = document.getElementsByClassName("save")
-    for (let i = 0; i < fields.length; i++) {
-
-
-
-
-        field = fields[i]
-        tooltip = createDiv(field.getBoundingClientRect().top, field.getBoundingClientRect().left, 20, 30, field.id, 12, "#e7e8e8", "left", tooltipsdiv, "", field.id + 'tooltip')
-        tooltip.style.opacity = 0
-        tooltip.style.zIndex = -1
-        invisdiv.style.fontSize = "12px"
-        invisdiv.innerText = tooltip.textContent
-        tooltip.style.width = invisdiv.clientWidth + "px"
-    }
-
-    document.body.insertBefore(tooltipsdiv, null);
-}
+})
