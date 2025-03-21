@@ -77,48 +77,47 @@ function update(exception) {
     }
 
 } function updategenericbuttons() {
-    buttons = document.getElementsByClassName("genericbutton")
+    let buttons = document.getElementsByClassName("genericbutton");
     for (let i = 0; i < buttons.length; i++) {
-        button = buttons[i]
+        let button = buttons[i];
         if (button.value == 0) { button.style.setProperty('background-color', '#dde4ff'); }
         else if (button.value == 1) { button.style.setProperty('background-color', 'grey'); }
     }
-    checkmarks = document.getElementsByClassName("checkmarkbutton")
+
+    let checkmarks = document.getElementsByClassName("checkmarkbutton");
     for (let i = 0; i < checkmarks.length; i++) {
-        button = checkmarks[i]
+        let button = checkmarks[i];
         if (button.value == 0) { button.textContent = ""; }
         else if (button.value == 1) { button.textContent = "◆"; }
     }
 } function updateCalculatedFields() {
-    fields = document.getElementsByClassName("calculated")
+    let fields = document.getElementsByClassName("calculated");
     for (let i = 0; i < fields.length; i++) {
-        field = fields[i]
-        calculation = field.textContent
-        count = (calculation.match(/\[/g) || []).length;
-        for (let i = 0; i < count; i++) {
-            start = calculation.indexOf("[")
-            finish = calculation.indexOf("]")
-            replacementid = calculation.slice(start + 1, finish)
+        let field = fields[i];
+        let calculation = field.textContent;
+        let count = (calculation.match(/\[/g) || []).length;
+        for (let j = 0; j < count; j++) {  // Changed from 'i' to 'j'
+            let start = calculation.indexOf("[");
+            let finish = calculation.indexOf("]");
+            let replacementid = calculation.slice(start + 1, finish);
             try {
-                replacementtext = document.getElementById(replacementid).value
-                replacement = (replacementtext == "") ? (0) : (parseInt(replacementtext))
-                calculation = calculation.replace(calculation.slice(start, finish + 1), String(replacement))
+                let replacementtext = document.getElementById(replacementid).value;
+                let replacement = (replacementtext == "") ? (0) : (parseInt(replacementtext));
+                calculation = calculation.replace(calculation.slice(start, finish + 1), String(replacement));
             }
-            catch { replacementtext = "" }
-
+            catch { /* replacementtext = "" */ }
         }
-        calculation = calculation.replaceAll("--", "+")
-        if (calculation == "") { field.value = "" }
+
+        calculation = calculation.replaceAll("--", "+");
+        if (calculation == "") { field.value = ""; }
         else {
             try {
-                val = eval(calculation)
-                if (isNaN(val)) { field.value = calculation }
-                else { field.value = eval(calculation) }
+                let val = eval(calculation);
+                if (isNaN(val)) { field.value = calculation; }
+                else { field.value = eval(calculation); }
             } catch (error) {
-                field.value = calculation
+                field.value = calculation;
             }
         }
-
     }
-
 }
