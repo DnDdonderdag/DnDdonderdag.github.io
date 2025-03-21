@@ -154,15 +154,6 @@
   z-index: -1;
 }
 
-/*Rules for filling the dark featurebox*/
-.filldarkfeaturebox {
-  left: var(--left);
-  top: var(--top);
-  position: absolute;
-  width: 200px;
-  height: 300px;
-}
-
 .acshield {
   position: absolute;
   left: var(--left);
@@ -205,6 +196,14 @@
   outline: solid 1px;
 }
 
+.filldarkfeaturebox,
+.abilityboxes,
+.fillattackandspellcasting {
+  position: absolute;
+  top: var(--top, 0px);
+  left: var(--left, 0px);
+}
+
 
 /*
 rules for ability boxes*/
@@ -214,14 +213,6 @@ rules for ability boxes*/
   position: absolute;
   width: var(--width);
   height: var(--height);
-}
-
-.abilityboxes {
-  left: var(--left);
-  top: var(--top);
-  position: absolute;
-  width: 190px;
-  height: 500px;
 }
 
 .abilityboxname {

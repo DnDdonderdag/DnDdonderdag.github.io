@@ -1,5 +1,5 @@
 /**************************************************
- * MODULE 0: HELPER functionS
+ * MODULE 0: HELPER FUNCTIONS
  * Utility functions used throughout the application
  **************************************************/
 
@@ -28,8 +28,6 @@ function update(exception) {
     if (exception != "typing") { updateCalculatedFields() }
     //updates the sidebar to reflect chosen archetype
     changeSidebar()
-
-
 }
 
 function sizeadjust(name) {
@@ -51,8 +49,6 @@ function sizeadjust(name) {
         var fontSize = parseFloat(style);
         textArea.style.fontSize = fontSize - 0.1 + 'px';
     }
-
-
 }
 
 function sizeadjustinput(id, boxlength, startfont) {
@@ -83,7 +79,6 @@ function sizeadjustinput(id, boxlength, startfont) {
             inputarea.style.fontSize = fontSize
         }
     }
-
 }
 
 function updategenericbuttons() {

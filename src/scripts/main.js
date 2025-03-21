@@ -36,12 +36,17 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM loaded, initializing application");
 
     try {
-        // Create the main pages
-        createMainpage(130, 30);
-        createSpellPage(130, 930);
-        createAttackpage(650, 30);
-        createBackstoryPage(650, 930);
-        createInventoryPage(1170, 30);
+        // Initialize the layout with proper positioning
+        const initialTop = 150;  // Starting Y position 
+        const initialLeft = 50;  // Starting X position
+
+        // Create the main layout
+        createMainpage(initialTop, initialLeft);
+
+        // Add additional pages as needed
+        createSpellPage(initialTop, initialLeft + 650);
+        createAttackpage(initialTop, initialLeft + 1300);
+        createInventoryPage(initialTop, initialLeft + 1950);
 
         console.log("Pages created successfully");
     } catch (error) {
