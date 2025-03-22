@@ -8,36 +8,38 @@ const abilityBars = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
 
 function createAbilityBoxes(top, left) {
     const maindiv = document.createElement("div");
-    maindiv.className = "abilityboxes not-selectable";
-    maindiv.style = " top:" + String(top) + "px; left:" + String(left) + "px;";
+    maindiv.className = "abilityboxes not-selectable"
+    maindiv.style = " top:" + String(top) + "px; left:" + String(left) + "px;"
 
-    // Don't redefine bars - use a different variable name
-    const specialBars = ["prof", "inspiration", "passive perception"];
-    const names = ["proficiency bonus", "inspiration", "passive perception"];
-
-    for (let i = 0; i < specialBars.length; i++) {
-        // Declare temptop properly
-        let temptop;
+    bars = ["prof", "inspiration", "passive perception"]
+    names = ["proficiency bonus", "inspiration", "passive perception"]
+    for (let i = 0; i < bars.length; i++) {
         if (i == 0) { temptop = -75; }
         else if (i == 1) { temptop = -40; }
         else if (i == 2) { temptop = 475; }
-
         const profbonusbox = document.createElement("img");
-        profbonusbox.className = "proficiencybox not-selectable";
+        profbonusbox.className = "proficiencybox not-selectable"
         profbonusbox.src = "assets/svg/profbonus.svg";
         profbonusbox.draggable = false;
-        profbonusbox.style = " --top:" + String(temptop) + "px; --left:" + String(10) + "px";
+        profbonusbox.style = " --top:" + String(temptop) + "px; --left:" + String(10) + "px"
         maindiv.appendChild(profbonusbox);
+
+        const profbonustext = document.createElement("div");
+        profbonustext.className = "proficiencyboxname not-selectable"
+        profbonustext.draggable = false;
+        profbonustext.style = " --top:" + String(temptop + 10) + "px; --left:" + String(75) + "px"
+        profbonustext.textContent = names[i].toUpperCase()
+        maindiv.appendChild(profbonustext);
 
         //the formfied for the score
         if (i == 0) {
-            createFormField(temptop + 3, 21, 35, 18, specialBars[i].toUpperCase(), "textarea", 15, "#dde4ff", "center", maindiv, true, "0", false, "exceptsize")
+            createFormField(temptop + 3, 21, 35, 18, bars[i].toUpperCase(), "textarea", 15, "#dde4ff", "center", maindiv, true, "0", false, "exceptsize")
         }
         if (i == 1) {
-            createFormField(temptop + 3, 21, 35, 18, specialBars[i].toUpperCase(), "textarea", 15, "#dde4ff", "center", maindiv, false, "", false, "exceptsize")
+            createFormField(temptop + 3, 21, 35, 18, bars[i].toUpperCase(), "textarea", 15, "#dde4ff", "center", maindiv, false, "", false, "exceptsize")
         }
         if (i == 2) {
-            createFormField(temptop + 3, 21, 35, 18, specialBars[i].toUpperCase(), "textarea", 15, "#dde4ff", "center", maindiv, true, "[WISPERCEPTIONskillmodifier] + 10", false, "exceptsize")
+            createFormField(temptop + 3, 21, 35, 18, bars[i].toUpperCase(), "textarea", 15, "#dde4ff", "center", maindiv, true, "[WISPERCEPTIONskillmodifier] + 10", false, "exceptsize")
         }
     }
 
@@ -111,7 +113,7 @@ function createAbilityBoxes(top, left) {
 
 
 
-    const currentDiv = document.getElementById("page1");
+    const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
 }
 
@@ -140,7 +142,7 @@ function filldarkbox(top, left) {
 
 
 
-    const currentDiv = document.getElementById("page1");
+    const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
 
     createFrame(63, 63, top + 10, left + 65, false, true, "INITIATIVE", "index", "input");
@@ -191,7 +193,7 @@ function fillattackandspellcasting(width, height, top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "fillattackandspellcasting not-selectable"
     maindiv.style = "position:absolute; top:" + String(top) + "px; width:" + String(width) + "px; left:" + String(left) + "px; height:" + String(height - 20) + "px"
-    const currentDiv = document.getElementById("page1");
+    const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
     createText(5, 10, 10, 38, "NAME", 7, "#c5c6c7", "left", maindiv)
     createText(5, 80, 10, 50, "ATK BONUS", 7, "#c5c6c7", "left", maindiv)

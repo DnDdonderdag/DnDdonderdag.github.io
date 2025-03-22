@@ -854,7 +854,7 @@ function createAbilityBoxes(top, left) {
 
 
 
-    const currentDiv = document.getElementById("page1");
+    const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
 }
 
@@ -883,7 +883,7 @@ function filldarkbox(top, left) {
 
 
 
-    const currentDiv = document.getElementById("page1");
+    const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
 
     createFrame(63, 63, top + 10, left + 65, false, true, "INITIATIVE", "index", "input");
@@ -934,7 +934,7 @@ function fillattackandspellcasting(width, height, top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "fillattackandspellcasting not-selectable"
     maindiv.style = "position:absolute; top:" + String(top) + "px; width:" + String(width) + "px; left:" + String(left) + "px; height:" + String(height - 20) + "px"
-    const currentDiv = document.getElementById("page1");
+    const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
     createText(5, 10, 10, 38, "NAME", 7, "#c5c6c7", "left", maindiv)
     createText(5, 80, 10, 50, "ATK BONUS", 7, "#c5c6c7", "left", maindiv)
@@ -1102,7 +1102,7 @@ function createAttackpage(top, left) {
 
 
     createHeaderpage3(top - 140, left - 30)
-    createFrame(410, 760, top, left, false, false, "attack page", "page1", "textarea")
+    createFrame(410, 760, top, left, false, false, "attack page", "index", "textarea")
 
     //lookups
     for (let i = 0; i < 2; i++) {
@@ -1134,10 +1134,10 @@ function createAttackpage(top, left) {
     //all:
     addedclass = "sidebar Melee Full_caster Half_caster"
     createFeaturebox(200, 300, 6, "c5c6c7", top - 74, left + 420, "index", addedclass)
-    createFrame(180, 85, top - 64, left + 430, false, false, "appliedConditions", "page1", "textarea", addedclass)
+    createFrame(180, 85, top - 64, left + 430, false, false, "appliedConditions", "index", "textarea", addedclass)
     createFrame(61, 63, top + 63, left + 485, false, true, "INITIATIVE", "index", "input", addedclass);
     createFrame(61, 63, top + 63, left + 548, false, true, "SPEED", "index", "input", addedclass);
-    createFrame(180, 83, top + 133, left + 430, false, false, "health", "page1", "textarea", addedclass)
+    createFrame(180, 83, top + 133, left + 430, false, false, "health", "index", "textarea", addedclass)
     for (let i = 0; i < 1; i++) {//ac shield, not actual forloop, just collapsed
         const ac = document.createElement("img");
         ac.className = "acshield not-selectable " + addedclass
@@ -1167,16 +1167,16 @@ function createAttackpage(top, left) {
     createScriptedButton(top + 138, left + 560, 39, 12, "Heal", healscript, maindiv, addedclass)
     createFormField(top - 59, left + 440, 156, 62, "appliedConditions", "textarea", "14", "#dde4ff", "left", maindiv, false, "", false, addedclass)
     createText(top + 9, left + 440, 20, 156, "CURRENTLY APPLIED CONDITIONS", 8, "#000000", "center", maindiv, addedclass)
-    createFrame(140, 30, top + 27, left + 450, false, false, "concentration", "page1", "textarea", addedclass)
+    createFrame(140, 30, top + 27, left + 450, false, false, "concentration", "index", "textarea", addedclass)
     createText(top + 36, left + 455, 20, 95, "CONCENTRATION", 10, "#000000", "center", maindiv, addedclass)
     createCheckmark(top + 31, left + 550, 20, 0, "CONCENTRATIONcheck", genericcheckmarkclick, maindiv, addedclass)
 
     createText(top + 236, left + 430, 10, 38, "NAME", 7, "#c5c6c7", "left", maindiv, addedclass)
     createText(top + 236, left + 500, 10, 50, "ATK BONUS", 7, "#c5c6c7", "left", maindiv, addedclass)
     createText(top + 236, left + 545, 10, 50, "DAMAGE/TYPE", 7, "#c5c6c7", "left", maindiv, addedclass)
-    createFrame(200, 100, top + 231, left + 420, false, false, "attacksfull", "page1", "input", "sidebar Melee")
-    createFrame(200, 80, top + 231, left + 420, false, false, "attackshalf", "page1", "input", "sidebar Half_caster")
-    createFrame(200, 60, top + 231, left + 420, false, false, "attacksmin", "page1", "input", "sidebar Full_caster")
+    createFrame(200, 100, top + 231, left + 420, false, false, "attacksfull", "index", "input", "sidebar Melee")
+    createFrame(200, 80, top + 231, left + 420, false, false, "attackshalf", "index", "input", "sidebar Half_caster")
+    createFrame(200, 60, top + 231, left + 420, false, false, "attacksmin", "index", "input", "sidebar Full_caster")
     for (let i = 0; i < 4; i++) {
         if (i >= 2) { addedclass = "sidebar Melee Half_caster"; }
         if (i >= 3) { addedclass = "sidebar Melee" }
@@ -1186,17 +1186,17 @@ function createAttackpage(top, left) {
     }
 
     //charged ability box for different archetypes
-    createFrame(200, 160, top + 336, left + 420, false, false, "chargesfull", "page1", "input", "sidebar Melee")
+    createFrame(200, 160, top + 336, left + 420, false, false, "chargesfull", "index", "input", "sidebar Melee")
     createText(top + 341, left + 430, 10, 38, "MAX", 7, "#c5c6c7", "left", maindiv, "sidebar Melee")
     createText(top + 341, left + 460, 10, 38, "ABILITY", 7, "#c5c6c7", "left", maindiv, "sidebar Melee")
     createText(top + 341, left + 550, 10, 38, "CHARGES", 7, "#c5c6c7", "left", maindiv, "sidebar Melee")
 
-    createFrame(200, 180, top + 316, left + 420, false, false, "chargesfull", "page1", "input", "sidebar Half_caster")
+    createFrame(200, 180, top + 316, left + 420, false, false, "chargesfull", "index", "input", "sidebar Half_caster")
     createText(top + 321, left + 430, 10, 38, "MAX", 7, "#c5c6c7", "left", maindiv, "sidebar Half_caster")
     createText(top + 321, left + 460, 10, 38, "ABILITY", 7, "#c5c6c7", "left", maindiv, "sidebar Half_caster")
     createText(top + 321, left + 550, 10, 38, "CHARGES", 7, "#c5c6c7", "left", maindiv, "sidebar Half_caster")
 
-    createFrame(200, 60, top + 296, left + 420, false, false, "chargesmin", "page1", "input", "sidebar Full_caster")
+    createFrame(200, 60, top + 296, left + 420, false, false, "chargesmin", "index", "input", "sidebar Full_caster")
     createText(top + 301, left + 430, 10, 38, "MAX", 7, "#c5c6c7", "left", maindiv, "sidebar Full_caster")
     createText(top + 301, left + 460, 10, 38, "ABILITY", 7, "#c5c6c7", "left", maindiv, "sidebar Full_caster")
     createText(top + 301, left + 550, 10, 38, "CHARGES", 7, "#c5c6c7", "left", maindiv, "sidebar Full_caster")
@@ -1217,10 +1217,10 @@ function createAttackpage(top, left) {
     //companion area
     addedclass = "sidebar Melee"
     createFeaturebox(200, 208, 6, "c5c6c7", top + 551, left + 420, "index", 'sidebar Melee')
-    createFrame(180, 45, top - 64 + 625, left + 430, false, false, "appliedConditions", "page1", "textarea", addedclass)
+    createFrame(180, 45, top - 64 + 625, left + 430, false, false, "appliedConditions", "index", "textarea", addedclass)
     createFrame(61, 63, top - 9 + 625, left + 485, false, true, "INITIATIVE", "index", "input", addedclass);
     createFrame(61, 63, top - 9 + 625, left + 548, false, true, "SPEED", "index", "input", addedclass);
-    createFrame(180, 63, top + 63 + 625, left + 430, false, false, "health", "page1", "textarea", addedclass)
+    createFrame(180, 63, top + 63 + 625, left + 430, false, false, "health", "index", "textarea", addedclass)
     for (let i = 0; i < 1; i++) {//ac shield, not actual forloop, just collapsed
         const ac = document.createElement("img");
         ac.className = "acshield not-selectable " + addedclass
@@ -1280,15 +1280,15 @@ function createBackstoryPage(top, left) {
     createHeaderpage4(top - 120, left - 30)
 
 
-    createFrame(400, 350, top, left, true, true, "BACKSTORY", "page1", "textarea", "")
+    createFrame(400, 350, top, left, true, true, "BACKSTORY", "index", "textarea", "")
     createFeaturebox(210, 350, 6, "c5c6c7", top, left + 410, "index")
     backstoryTabs = ["PERSONALITY TRAITS", "IDEALS", "BONDS", "FLAWS"]
     for (let i = 0; i < 4; i++) {
-        createFrame(190, 80, top + 10 + 83 * i, left + 420, true, true, backstoryTabs[i], "page1", "textarea", "")
+        createFrame(190, 80, top + 10 + 83 * i, left + 420, true, true, backstoryTabs[i], "index", "textarea", "")
     }
 
-    createFrame(210, 400, top + 360, left, true, true, "ALLIES & ORGANIZATIONS", "page1", "textarea", "")
-    createFrame(400, 400, top + 360, left + 220, false, true, "FEATURES & TRAITS LOOK UP", "page1", "textarea", "")
+    createFrame(210, 400, top + 360, left, true, true, "ALLIES & ORGANIZATIONS", "index", "textarea", "")
+    createFrame(400, 400, top + 360, left + 220, false, true, "FEATURES & TRAITS LOOK UP", "index", "textarea", "")
 
 
 
@@ -1305,44 +1305,44 @@ function createInventoryPage(top, left) {
 
 
 
-    createFrame(330, 185, top, left, false, false, "miscellaneous", "page1", "textarea", "")
+    createFrame(330, 185, top, left, false, false, "miscellaneous", "index", "textarea", "")
     createFormField(top + 5, left + 10, 148, 160, "miscellaneous", "textarea", "16", "#dde4ff", "left", maindiv, true, "", false, "")
     createFormField(top + 5, left + 168, 148, 160, "shoppinglist", "textarea", "16", "#dde4ff", "left", maindiv, true, "", false, "")
     createText(top + 172, left + 10, 15, 148, "MISCELLANEOUS", "8", "#000000", "center", maindiv, "")
     createText(top + 172, left + 168, 15, 148, "SHOPPING LIST", "8", "#000000", "center", maindiv, "")
 
-    createFrame(130, 185, top, left + 340, false, false, "funds", "page1", "textarea", "")
+    createFrame(130, 185, top, left + 340, false, false, "funds", "index", "textarea", "")
     createText(top + 172, left + 340, 15, 130, "FUNDS", "8", "#000000", "center", maindiv, "")
     createText(top + 10, left + 310, 15, 130, "PERSONAL", "8", "#000000", "center", maindiv, "")
     createText(top + 10, left + 370, 15, 130, "PARTY", "8", "#000000", "center", maindiv, "")
 
-    createFrame(140, 185, top, left + 480, false, false, "essentials", "page1", "textarea", "")
+    createFrame(140, 185, top, left + 480, false, false, "essentials", "index", "textarea", "")
     createText(top + 172, left + 480, 15, 140, "ESSENTIAL ITEMS", "8", "#000000", "center", maindiv, "")
 
-    createFrame(200, 200, top + 195, left, false, false, "potions", "page1", "textarea", "")
+    createFrame(200, 200, top + 195, left, false, false, "potions", "index", "textarea", "")
     createFormField(top + 200, left + 10, 175, 175, "potions", "textarea", "16", "#dde4ff", "left", maindiv, true, "", false, "")
     createText(top + 382, left + 10, 15, 175, "POTIONS", "8", "#000000", "center", maindiv, "")
 
-    createFrame(200, 200, top + 195, left + 210, false, false, "questitems", "page1", "textarea", "")
+    createFrame(200, 200, top + 195, left + 210, false, false, "questitems", "index", "textarea", "")
     createFormField(top + 200, left + 220, 175, 175, "questitems", "textarea", "16", "#dde4ff", "left", maindiv, true, "", false, "")
     createText(top + 382, left + 220, 15, 175, "QUEST ITEMS", "8", "#000000", "center", maindiv, "")
 
-    createFrame(410, 355, top + 405, left, false, false, "treasures", "page1", "textarea", "")
+    createFrame(410, 355, top + 405, left, false, false, "treasures", "index", "textarea", "")
     createFormField(top + 410, left + 10, 188, 330, "treasures1", "textarea", "12", "#dde4ff", "left", maindiv, true, "", false, "")
     createFormField(top + 410, left + 208, 188, 330, "treasures2", "textarea", "12", "#dde4ff", "left", maindiv, true, "", false, "")
     createText(top + 747, left + 10, 15, 385, "TREASURES", "8", "#000000", "center", maindiv, "")
 
-    createFrame(190, 200, top + 195, left + 430, false, false, "armor", "page1", "textarea", "")
+    createFrame(190, 200, top + 195, left + 430, false, false, "armor", "index", "textarea", "")
     createText(top + 195 + 200 - 15, left + 440, 15, 165, "ARMOR", "12", "#000000", "right", maindiv, "")
     fillEquipmentSlot(top + 195, left + 430, 4, "armor", maindiv, "")
 
 
-    createFrame(190, 200, top + 400, left + 430, false, false, "weapons", "page1", "textarea", "")
+    createFrame(190, 200, top + 400, left + 430, false, false, "weapons", "index", "textarea", "")
     createText(top + 400 + 200 - 15, left + 440, 15, 165, "WEAPONS", "12", "#000000", "right", maindiv, "")
     fillEquipmentSlot(top + 400, left + 430, 4, "weapons", maindiv, "")
 
 
-    createFrame(190, 155, top + 605, left + 430, false, false, "attunements", "page1", "textarea", "")
+    createFrame(190, 155, top + 605, left + 430, false, false, "attunements", "index", "textarea", "")
     createText(top + 605 + 155 - 15, left + 440, 15, 165, "ATTUNEMENTS", "12", "#000000", "right", maindiv, "")
     fillEquipmentSlot(top + 605, left + 430, 3, "attunements", maindiv, "")
 

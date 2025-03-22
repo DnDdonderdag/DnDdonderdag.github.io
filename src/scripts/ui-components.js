@@ -4,16 +4,19 @@
  **************************************************/
 
 function createFormField(top, left, width, height, name, format, textsize, color, align, parentdiv, calculated = false, initcalculation = "", syncbool = false, addedclass = "") {
-    const formfield = document.createElement(format === "textarea" ? "textarea" : "input");
-    formfield.className = "genericformfield " + addedclass + (syncbool ? " sync" : "");
-    formfield.id = name;
-
-    // Fix: Add "px" to position values to ensure consistent CSS application
-    formfield.style = "--top:" + String(top) + "px; --left:" + String(left) + "px; --boxlength:" + String(width - 10) + "; --startfont:" + String(textsize) + "; --width:" + String(width) + "px; --height:" + String(height) + "px; --color:" + String(color) + "; --align:" + String(align) + "; --fontsize:" + String(textsize) + "px";
-
-    formfield.spellcheck = false;
+    const formfield = document.createElement(format);
+    if (addedclass.includes("exceptsize")) {
+        if (format == "input") { formfield.className = "genericformfield save not-selectable " + " " + addedclass + " " + (calculated ? (" calculated") : ("")) + (syncbool ? (" sync") : ("")); }
+        else if (format == "textarea") { formfield.className = "genericformfield save not-selectable " + " " + addedclass + " " + (calculated ? (" calculated") : ("")) + (syncbool ? (" sync") : ("")); }
+    }
+    else {
+        if (format == "input") { formfield.className = "genericformfield save not-selectable sizeadjustinput" + " " + addedclass + " " + (calculated ? (" calculated") : ("")) + (syncbool ? (" sync") : ("")); }
+        else if (format == "textarea") { formfield.className = "genericformfield save not-selectable sizeadjust" + " " + addedclass + " " + (calculated ? (" calculated") : ("")) + (syncbool ? (" sync") : ("")); }
+    }
+    formfield.id = name
+    formfield.style = "--top:" + String(top) + "px; --left:" + String(left) + "px; --boxlength:" + String(width - 10) + "; --startfont:" + String(textsize) + "; --width:" + String(width) + "px; --height:" + String(height) + "px; --color:" + String(color) + "; --align:" + String(align) + "; --fontsize:" + String(textsize) + "px"
+    formfield.spellcheck = false
     formfield.onkeyup = function () { update("typing") };
-
     if (calculated) {
         formfield.textContent = initcalculation
         formfield.value = ""
@@ -22,7 +25,8 @@ function createFormField(top, left, width, height, name, format, textsize, color
     }
     else { formfield.onblur = function () { unfocusfunc(formfield, "sync update") }; }
     parentdiv.appendChild(formfield);
-    return formfield;
+    return formfield
+
 }
 
 function createText(top, left, height, width, content, fontsize, color, align, parentdiv, addedclass = "") {
