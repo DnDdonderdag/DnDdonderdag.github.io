@@ -350,7 +350,7 @@ function createInventoryPage(top, left) {
 
 function createNotesPage(top, left) {
     const maindiv = document.createElement("div");
-    maindiv.className = "Notes page";
+    maindiv.className = "notes page";
 
     createHeaderpage4(top - 120, left - 30);
 
