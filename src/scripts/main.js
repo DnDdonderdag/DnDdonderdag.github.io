@@ -44,12 +44,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Top row pages
         createMainpage(initialTop, initialLeft);
-        createInventoryPage(initialTop, initialLeft + width);
-        createBackstoryPage(initialTop, initialLeft + 2 * width);
+        createAttackpage(initialTop, initialLeft + width);
+        createSpellPage(initialTop, initialLeft + 2 * width);
 
         // Bottom row pages
-        createSpellPage(initialTop + height, initialLeft);
-        createAttackpage(initialTop + height, initialLeft + width);
+        createInventoryPage(initialTop + height, initialLeft);
+        createBackstoryPage(initialTop + height, initialLeft + width);
 
 
         console.log("Pages created successfully");
