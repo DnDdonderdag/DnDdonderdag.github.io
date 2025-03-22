@@ -347,3 +347,25 @@ function createInventoryPage(top, left) {
 
     document.body.insertBefore(maindiv, null);
 }
+
+function createNotesPage(top, left) {
+    const maindiv = document.createElement("div");
+    maindiv.className = "Notes page";
+
+    createHeaderpage4(top - 120, left - 30);
+
+    // Create main notes sections in a vertical layout
+    const noteCategories = ["GENERAL", "LOCATIONS", "NPCS", "QUESTS", "LORE"];
+    const sectionHeight = 148; // Height for each section
+    const margin = 5; // Margin between sections
+
+    // Create a single container for all notes
+    for (let i = 0; i < noteCategories.length; i++) {
+        const sectionTop = top + (i * (sectionHeight + margin));
+
+        // Create main frame for each category
+        createFrame(620, sectionHeight, sectionTop, left, true, true, `${noteCategories[i]}`, "index", "textarea", "");
+    }
+
+    document.body.insertBefore(maindiv, null);
+}

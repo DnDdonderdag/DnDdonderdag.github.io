@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Bottom row pages
         createInventoryPage(initialTop + height, initialLeft);
         createBackstoryPage(initialTop + height, initialLeft + width);
+        createNotesPage(initialTop + height, initialLeft + 2 * width);
 
 
         console.log("Pages created successfully");
