@@ -37,12 +37,12 @@ function createSpellPage(top, left) {
         headerchar.alt = "spelllistframe";
         headerchar.draggable = false;
         headerchar.style = `
-            --top: ${top - 40}px;
+            --top: ${top - 20}px;
             --left: ${left + i * 206}px; 
             --height: 760px;
             --width: 207px;
             transform-origin: top center;
-            transform: translateY(20px) scaleY(1.05);
+            transform: scaleY(1.05);
             object-fit: fill;
         `;
         maindiv.appendChild(headerchar);
