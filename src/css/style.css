@@ -16,6 +16,7 @@
 /* ==============================
    1. VARIABLES & BASE STYLES
    ============================== */
+
 :root {
   /* Color variables */
   --primary-color: #dde4ff;
@@ -35,13 +36,14 @@
   --z-index-top: 1000;
 }
 
-.body {
+body {
   font-family: monospace;
 }
 
 /* ==============================
    2. FRAME STYLES
    ============================== */
+
 .frame {
   left: var(--left, 20px);
   top: var(--top, 20px);
@@ -49,7 +51,7 @@
   width: calc(var(--width, 50px));
   height: calc(var(--height, 50px));
   background-color: var(--background-color);
-  clip-path: polygon(var(--bevel) 0px, calc(var(--width) - var(--bevel)) 0px, calc(var(--width)) var(--bevel), calc(var(--width)) calc(var(--height) - var(--bevel)), calc(var(--width) - var(--bevel)) calc(var(--height)), var(--bevel) calc(var(--height)), 0px calc(var(--height) - var(--bevel)), 0px var(--bevel));
+  clip-path: polygon(var(--standard-bevel) 0px, calc(var(--width) - var(--standard-bevel)) 0px, calc(var(--width)) var(--standard-bevel), calc(var(--width)) calc(var(--height) - var(--standard-bevel)), calc(var(--width) - var(--standard-bevel)) calc(var(--height)), var(--standard-bevel) calc(var(--height)), 0px calc(var(--height) - var(--standard-bevel)), 0px var(--standard-bevel));
 }
 
 .verticalline {
@@ -120,13 +122,14 @@
 /* ==============================
    3. FEATURE BOX STYLES
    ============================== */
+
 .featurebox {
   left: var(--left);
   top: var(--top);
   position: absolute;
   width: calc(var(--width));
   height: calc(var(--height));
-  clip-path: polygon(var(--bevel) 0px, calc(var(--width) - var(--bevel)) 0px, calc(var(--width)) var(--bevel), calc(var(--width)) calc(var(--height) - var(--bevel)), calc(var(--width) - var(--bevel)) calc(var(--height)), var(--bevel) calc(var(--height)), 0px calc(var(--height) - var(--bevel)), 0px var(--bevel));
+  clip-path: polygon(var(--standard-bevel) 0px, calc(var(--width) - var(--standard-bevel)) 0px, calc(var(--width)) var(--standard-bevel), calc(var(--width)) calc(var(--height) - var(--standard-bevel)), calc(var(--width) - var(--standard-bevel)) calc(var(--height)), var(--standard-bevel) calc(var(--height)), 0px calc(var(--height) - var(--standard-bevel)), 0px var(--standard-bevel));
   background: var(--color);
   z-index: -1;
 }
@@ -134,28 +137,28 @@
 .featurebox::after {
   content: "";
   position: absolute;
-  top: calc(var(--bevel)/4);
-  left: calc(var(--bevel)/4);
-  width: calc(var(--width) - var(--bevel)/2);
-  height: calc(var(--height) - var(--bevel)/2);
-  clip-path: polygon(calc(var(--bevel)) 0px,
-      calc(var(--width) - var(--bevel)*1.5) 0px,
-      calc(var(--width) - var(--bevel)/2) calc(var(--bevel)),
-      calc(var(--width) - var(--bevel)/2) calc(var(--height) - var(--bevel)*1.5),
-      calc(var(--width) - var(--bevel)*1.5) calc(var(--height) - var(--bevel)/2),
-      calc(var(--bevel)) calc(var(--height) - var(--bevel)/2),
-      0px calc(var(--height) - var(--bevel)*1.5),
-      0px calc(var(--bevel)),
-      calc(var(--bevel)) 0px,
-      calc(var(--bevel) + 2px) 2px,
-      2px calc(var(--bevel) + 2px),
-      2px calc(var(--height) - var(--bevel)*1.5 - 2px),
-      calc(var(--bevel) + 2px) calc(var(--height) - var(--bevel)/2 - 2px),
-      calc(var(--width) - var(--bevel)*1.5 - 2px) calc(var(--height) - var(--bevel)/2 - 2px),
-      calc(var(--width) - var(--bevel)/2 - 2px) calc(var(--height) - var(--bevel)*1.5 - 2px),
-      calc(var(--width) - var(--bevel)/2 - 2px) calc(var(--bevel) + 2px),
-      calc(var(--width) - var(--bevel)*1.5 - 2px) 2px,
-      calc(var(--bevel) + 2px) 2px);
+  top: calc(var(--standard-bevel)/4);
+  left: calc(var(--standard-bevel)/4);
+  width: calc(var(--width) - var(--standard-bevel)/2);
+  height: calc(var(--height) - var(--standard-bevel)/2);
+  clip-path: polygon(calc(var(--standard-bevel)) 0px,
+      calc(var(--width) - var(--standard-bevel)*1.5) 0px,
+      calc(var(--width) - var(--standard-bevel)/2) calc(var(--standard-bevel)),
+      calc(var(--width) - var(--standard-bevel)/2) calc(var(--height) - var(--standard-bevel)*1.5),
+      calc(var(--width) - var(--standard-bevel)*1.5) calc(var(--height) - var(--standard-bevel)/2),
+      calc(var(--standard-bevel)) calc(var(--height) - var(--standard-bevel)/2),
+      0px calc(var(--height) - var(--standard-bevel)*1.5),
+      0px calc(var(--standard-bevel)),
+      calc(var(--standard-bevel)) 0px,
+      calc(var(--standard-bevel) + 2px) 2px,
+      2px calc(var(--standard-bevel) + 2px),
+      2px calc(var(--height) - var(--standard-bevel)*1.5 - 2px),
+      calc(var(--standard-bevel) + 2px) calc(var(--height) - var(--standard-bevel)/2 - 2px),
+      calc(var(--width) - var(--standard-bevel)*1.5 - 2px) calc(var(--height) - var(--standard-bevel)/2 - 2px),
+      calc(var(--width) - var(--standard-bevel)/2 - 2px) calc(var(--height) - var(--standard-bevel)*1.5 - 2px),
+      calc(var(--width) - var(--standard-bevel)/2 - 2px) calc(var(--standard-bevel) + 2px),
+      calc(var(--width) - var(--standard-bevel)*1.5 - 2px) 2px,
+      calc(var(--standard-bevel) + 2px) 2px);
   background: var(--background-color);
   z-index: -1;
 }
@@ -171,6 +174,7 @@
 /* ==============================
    4. ABILITY & PROFICIENCY STYLES
    ============================== */
+
 .abilitybox {
   left: var(--left);
   top: var(--top);
@@ -273,6 +277,7 @@
 /* ==============================
    5. AC SHIELD STYLES
    ============================== */
+
 .acshield {
   position: absolute;
   left: var(--left);
@@ -304,7 +309,6 @@
   font-family: var(--primary-font);
   border: none;
   outline: none;
-  text-align: center;
   font-size: 12pt;
   z-index: var(--z-index-top);
 }
@@ -316,6 +320,7 @@
 /* ==============================
    6. HEADER STYLES
    ============================== */
+
 .header {
   position: absolute;
   top: var(--top);
@@ -378,6 +383,7 @@
 /* ==============================
    7. SPELL LIST STYLES
    ============================== */
+
 .spelllistrect {
   left: var(--left);
   top: var(--top);
@@ -398,6 +404,7 @@
 /* ==============================
    8. GENERIC FORM COMPONENTS
    ============================== */
+
 .genericformfield {
   position: absolute;
   left: var(--left);
@@ -447,6 +454,7 @@
 /* ==============================
    9. BUTTONS AND INTERACTIVE ELEMENTS
    ============================== */
+
 .savebutton,
 .browsebutton {
   position: absolute;
@@ -460,7 +468,7 @@
   position: absolute;
   left: var(--left);
   top: var(--top);
-  border: .7px solid rgb(0, 0, 0);
+  border: .7px solid var(--line-color);
   background-color: var(--background-color);
   height: var(--size);
   border-radius: 50%;
@@ -469,7 +477,7 @@
 }
 
 .genericbutton:hover {
-  border: 2px solid rgb(0, 0, 0);
+  border: 2px solid var(--line-color);
   left: calc(var(--left) - 0.80px);
   top: calc(var(--top) - 0.80px);
 }
@@ -478,7 +486,7 @@
   position: absolute;
   left: var(--left);
   top: var(--top);
-  border: .7px solid rgb(0, 0, 0);
+  border: .7px solid var(--line-color);
   background-color: var(--primary-color);
   height: var(--size);
   width: var(--size);
@@ -491,7 +499,7 @@
 }
 
 .checkmarkbutton:hover {
-  border: .7px solid rgb(0, 0, 0);
+  border: .7px solid var(--line-color);
   cursor: pointer;
 }
 
@@ -537,6 +545,7 @@
 /* ==============================
    10. TYPOGRAPHY
    ============================== */
+
 @font-face {
   font-family: Scalasans;
   src: url(../../assets/otf/scalasans.otf);
@@ -555,6 +564,7 @@
 /* ==============================
    11. UTILITY CLASSES
    ============================== */
+
 .not-selectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -599,6 +609,7 @@
 /* ==============================
    12. DEVELOPMENT/DEBUG TOOLS
    ============================== */
+
 #measurer {
   position: absolute;
   left: 1300px;
