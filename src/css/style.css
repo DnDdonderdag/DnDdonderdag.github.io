@@ -1,20 +1,54 @@
-/*find and replace in svg:  \sicc-color\([,0-9a-z-\.\s]*\)   */
-/*  #dde4ff  blue color*/
+/*
+ * D&D Character Sheet CSS
+ * Table of Contents:
+ * 1. Variables & Base Styles
+ * 2. Frame Styles
+ * 3. Feature Box Styles
+ * 4. Ability & Proficiency Styles
+ * 5. Header Styles
+ * 6. Spell List Styles
+ * 7. Generic Form Components
+ * 8. Buttons and Interactive Elements
+ * 9. Typography
+ * 10. Utility Classes
+ */
+
+/* ==============================
+   1. VARIABLES & BASE STYLES
+   ============================== */
+:root {
+  /* Color variables */
+  --primary-color: #dde4ff;
+  --secondary-color: #e7e8e8;
+  --tertiary-color: #c5c6c7;
+  --line-color: #000000;
+  --background-color: #FFFFFF;
+
+  /* Typography */
+  --primary-font: Arial, Helvetica, sans-serif;
+  --display-font: scalasans;
+  --display-font-light: scalasanslight;
+  --display-font-bold: scalasansbold;
+
+  /* Common dimensions */
+  --standard-bevel: 5px;
+  --z-index-top: 1000;
+}
 
 .body {
   font-family: monospace;
 }
 
-
-
-/*Rules for Frame */
+/* ==============================
+   2. FRAME STYLES
+   ============================== */
 .frame {
   left: var(--left, 20px);
   top: var(--top, 20px);
   position: absolute;
   width: calc(var(--width, 50px));
   height: calc(var(--height, 50px));
-  background-color: rgb(255, 255, 255);
+  background-color: var(--background-color);
   clip-path: polygon(var(--bevel) 0px, calc(var(--width) - var(--bevel)) 0px, calc(var(--width)) var(--bevel), calc(var(--width)) calc(var(--height) - var(--bevel)), calc(var(--width) - var(--bevel)) calc(var(--height)), var(--bevel) calc(var(--height)), 0px calc(var(--height) - var(--bevel)), 0px var(--bevel));
 }
 
@@ -28,21 +62,7 @@
   display: block;
   margin: auto;
   user-select: none;
-  z-index: 1000;
-}
-
-.corner {
-  width: var(--width);
-  /* Set desired width */
-  height: var(--width);
-  /* Maintain aspect ratio */
-  position: absolute;
-  /* Positioning */
-  top: var(--top);
-  /* Set top position */
-  left: var(--left);
-  transform: var(--rotate);
-  user-select: none;
+  z-index: var(--z-index-top);
 }
 
 .horizontalline {
@@ -57,20 +77,34 @@
   user-select: none;
 }
 
+.corner {
+  width: var(--width);
+  height: var(--width);
+  /* Maintain aspect ratio */
+  position: absolute;
+  top: var(--top);
+  left: var(--left);
+  transform: var(--rotate);
+  user-select: none;
+}
+
 .frameform {
   position: absolute;
   left: 10px;
   top: 5px;
   width: var(--width);
   height: var(--height);
-  background-color: #dde4ff;
+  background-color: var(--primary-color);
   resize: none;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--primary-font);
   border: none;
   outline: none;
   font-size: 12pt;
-  z-index: 1000;
+  z-index: var(--z-index-top);
+}
 
+.frameform:hover {
+  outline: solid 1px;
 }
 
 .framename {
@@ -78,34 +112,14 @@
   top: var(--top);
   height: 30px;
   width: var(--width);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--display-font);
   text-align: center;
-  font-family: scalasans;
   font-size: 6pt;
 }
 
-.frameform:hover {
-  outline: solid 1px;
-}
-
-/*Save button*/
-.savebutton {
-  position: absolute;
-  left: var(--left);
-  top: var(--top);
-  height: var(--height);
-  width: var(--width);
-}
-
-.browsebutton {
-  position: absolute;
-  left: var(--left);
-  top: var(--top);
-  height: var(--height);
-  width: var(--width);
-}
-
-/*Rules for a featurebox*/
+/* ==============================
+   3. FEATURE BOX STYLES
+   ============================== */
 .featurebox {
   left: var(--left);
   top: var(--top);
@@ -126,74 +140,24 @@
   height: calc(var(--height) - var(--bevel)/2);
   clip-path: polygon(calc(var(--bevel)) 0px,
       calc(var(--width) - var(--bevel)*1.5) 0px,
-
       calc(var(--width) - var(--bevel)/2) calc(var(--bevel)),
       calc(var(--width) - var(--bevel)/2) calc(var(--height) - var(--bevel)*1.5),
-
       calc(var(--width) - var(--bevel)*1.5) calc(var(--height) - var(--bevel)/2),
       calc(var(--bevel)) calc(var(--height) - var(--bevel)/2),
-
       0px calc(var(--height) - var(--bevel)*1.5),
       0px calc(var(--bevel)),
-
       calc(var(--bevel)) 0px,
-
       calc(var(--bevel) + 2px) 2px,
       2px calc(var(--bevel) + 2px),
       2px calc(var(--height) - var(--bevel)*1.5 - 2px),
-
       calc(var(--bevel) + 2px) calc(var(--height) - var(--bevel)/2 - 2px),
       calc(var(--width) - var(--bevel)*1.5 - 2px) calc(var(--height) - var(--bevel)/2 - 2px),
-
       calc(var(--width) - var(--bevel)/2 - 2px) calc(var(--height) - var(--bevel)*1.5 - 2px),
       calc(var(--width) - var(--bevel)/2 - 2px) calc(var(--bevel) + 2px),
-
       calc(var(--width) - var(--bevel)*1.5 - 2px) 2px,
       calc(var(--bevel) + 2px) 2px);
-  background: rgb(255, 255, 255);
+  background: var(--background-color);
   z-index: -1;
-}
-
-.acshield {
-  position: absolute;
-  left: var(--left);
-  top: var(--top);
-  width: var(--width);
-  height: var(--height);
-}
-
-.acshieldname {
-  position: absolute;
-  left: var(--left);
-  top: var(--top);
-  height: 40px;
-  width: 30px;
-  font-family: Arial, Helvetica, sans-serif;
-  text-align: center;
-  font-family: scalasanslight;
-  font-size: 5pt;
-}
-
-.acshieldform {
-  text-align: center;
-  position: absolute;
-  left: var(--left);
-  top: var(--top);
-
-  width: var(--width);
-  height: var(--height);
-  background-color: #dde4ff;
-  resize: none;
-  font-family: Arial, Helvetica, sans-serif;
-  border: none;
-  outline: none;
-  text-align: center;
-  font-size: 12pt;
-  z-index: 1000;
-}
-
-.acshieldform:hover {
-  outline: solid 1px;
 }
 
 .filldarkfeaturebox,
@@ -204,9 +168,9 @@
   left: var(--left, 0px);
 }
 
-
-/*
-rules for ability boxes*/
+/* ==============================
+   4. ABILITY & PROFICIENCY STYLES
+   ============================== */
 .abilitybox {
   left: var(--left);
   top: var(--top);
@@ -221,9 +185,8 @@ rules for ability boxes*/
   top: var(--top);
   height: 30px;
   width: 65px;
-  font-family: Arial, Helvetica, sans-serif;
   text-align: center;
-  font-family: scalasanslight;
+  font-family: var(--display-font-light);
   font-size: 6pt;
 }
 
@@ -233,14 +196,17 @@ rules for ability boxes*/
   top: var(--top);
   width: 40px;
   height: 26px;
-  background-color: #dde4ff;
+  background-color: var(--primary-color);
   resize: none;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--primary-font);
   border: none;
   outline: none;
   text-align: center;
   font-size: 16pt;
+}
 
+.abilityboxform:hover {
+  outline: solid 1px;
 }
 
 .modiferform {
@@ -249,17 +215,13 @@ rules for ability boxes*/
   top: var(--top);
   width: 20px;
   height: 12px;
-  background-color: #e7e8e8;
+  background-color: var(--secondary-color);
   resize: none;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--primary-font);
   border: none;
   outline: none;
   text-align: center;
   font-size: 7pt;
-}
-
-.abilityboxform:hover {
-  outline: solid 1px;
 }
 
 .skilltext {
@@ -268,9 +230,8 @@ rules for ability boxes*/
   top: var(--top);
   height: 10px;
   width: 80px;
-  font-family: Arial, Helvetica, sans-serif;
   text-align: left;
-  font-family: scalasanslight;
+  font-family: var(--display-font-light);
   font-size: 6pt;
 }
 
@@ -278,9 +239,16 @@ rules for ability boxes*/
   position: absolute;
   left: var(--left);
   top: var(--top);
-  background-color: #000000;
+  background-color: var(--line-color);
   height: 1px;
   width: 14px;
+}
+
+.proficiency {
+  /* Proficiency styles */
+  position: absolute;
+  left: var(--left);
+  top: var(--top);
 }
 
 .proficiencybox {
@@ -297,18 +265,60 @@ rules for ability boxes*/
   top: var(--top);
   height: 15px;
   width: 100px;
-  font-family: Arial, Helvetica, sans-serif;
   text-align: center;
-  font-family: scalasanslight;
+  font-family: var(--display-font-light);
   font-size: 7pt;
 }
 
+/* ==============================
+   5. AC SHIELD STYLES
+   ============================== */
+.acshield {
+  position: absolute;
+  left: var(--left);
+  top: var(--top);
+  width: var(--width);
+  height: var(--height);
+}
 
-/*rules for header*/
+.acshieldname {
+  position: absolute;
+  left: var(--left);
+  top: var(--top);
+  height: 40px;
+  width: 30px;
+  text-align: center;
+  font-family: var(--display-font-light);
+  font-size: 5pt;
+}
+
+.acshieldform {
+  text-align: center;
+  position: absolute;
+  left: var(--left);
+  top: var(--top);
+  width: var(--width);
+  height: var(--height);
+  background-color: var(--primary-color);
+  resize: none;
+  font-family: var(--primary-font);
+  border: none;
+  outline: none;
+  text-align: center;
+  font-size: 12pt;
+  z-index: var(--z-index-top);
+}
+
+.acshieldform:hover {
+  outline: solid 1px;
+}
+
+/* ==============================
+   6. HEADER STYLES
+   ============================== */
 .header {
   position: absolute;
   top: var(--top);
-  /* Set top position */
   left: var(--left);
   user-select: none;
   height: auto;
@@ -322,9 +332,8 @@ rules for ability boxes*/
   top: var(--top);
   height: 15px;
   width: 85px;
-  font-family: Arial, Helvetica, sans-serif;
   text-align: left;
-  font-family: scalasanslight;
+  font-family: var(--display-font-light);
   font-size: 6pt;
 }
 
@@ -334,9 +343,9 @@ rules for ability boxes*/
   top: var(--top);
   width: 100px;
   height: 12px;
-  background-color: #dde4ff;
+  background-color: var(--primary-color);
   resize: none;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--primary-font);
   border: none;
   outline: none;
   text-align: left;
@@ -353,9 +362,9 @@ rules for ability boxes*/
   top: var(--top);
   width: 180px;
   height: 21px;
-  background-color: #dde4ff;
+  background-color: var(--primary-color);
   resize: none;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--primary-font);
   border: none;
   outline: none;
   text-align: center;
@@ -366,6 +375,9 @@ rules for ability boxes*/
   outline: solid 1px;
 }
 
+/* ==============================
+   7. SPELL LIST STYLES
+   ============================== */
 .spelllistrect {
   left: var(--left);
   top: var(--top);
@@ -380,11 +392,12 @@ rules for ability boxes*/
   top: var(--top);
   position: absolute;
   width: var(--width);
-  ;
   height: auto;
 }
 
-/* rules for generic formfield*/
+/* ==============================
+   8. GENERIC FORM COMPONENTS
+   ============================== */
 .genericformfield {
   position: absolute;
   left: var(--left);
@@ -393,12 +406,12 @@ rules for ability boxes*/
   height: var(--height);
   background-color: var(--color);
   resize: none;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--primary-font);
   border: none;
   outline: none;
   text-align: var(--align);
   font-size: var(--fontsize);
-  z-index: 1000;
+  z-index: var(--z-index-top);
 }
 
 .genericformfield:hover {
@@ -411,12 +424,36 @@ rules for ability boxes*/
   left: var(--left);
   height: var(--height);
   width: var(--width);
-  font-family: Arial, Helvetica, sans-serif;
   text-align: var(--align);
-  font-family: scalasans;
+  font-family: var(--display-font);
   font-size: var(--fontsize);
   color: var(--color);
-  z-index: 1000;
+  z-index: var(--z-index-top);
+}
+
+.genericline {
+  height: var(--height);
+  width: var(--width);
+  position: absolute;
+  top: var(--top);
+  left: var(--left);
+  transform: var(--scale);
+  display: block;
+  margin: auto;
+  user-select: none;
+  background-color: var(--line-color);
+}
+
+/* ==============================
+   9. BUTTONS AND INTERACTIVE ELEMENTS
+   ============================== */
+.savebutton,
+.browsebutton {
+  position: absolute;
+  left: var(--left);
+  top: var(--top);
+  height: var(--height);
+  width: var(--width);
 }
 
 .genericbutton {
@@ -424,11 +461,11 @@ rules for ability boxes*/
   left: var(--left);
   top: var(--top);
   border: .7px solid rgb(0, 0, 0);
-  background-color: #FFFFFF;
+  background-color: var(--background-color);
   height: var(--size);
   border-radius: 50%;
   width: var(--size);
-  z-index: 1000;
+  z-index: var(--z-index-top);
 }
 
 .genericbutton:hover {
@@ -442,10 +479,10 @@ rules for ability boxes*/
   left: var(--left);
   top: var(--top);
   border: .7px solid rgb(0, 0, 0);
-  background-color: #dde4ff;
+  background-color: var(--primary-color);
   height: var(--size);
   width: var(--size);
-  z-index: 1000;
+  z-index: var(--z-index-top);
   font-size: var(--textsize);
   text-align: center;
   vertical-align: text-top;
@@ -456,19 +493,6 @@ rules for ability boxes*/
 .checkmarkbutton:hover {
   border: .7px solid rgb(0, 0, 0);
   cursor: pointer;
-}
-
-.genericline {
-  height: var(--height);
-  width: var(--width);
-  position: absolute;
-  top: var(--top);
-  left: var(--left);
-  transform: var(--scale);
-  display: block;
-  margin: auto;
-  user-select: none;
-  background-color: #000000;
 }
 
 .dropdown {
@@ -485,11 +509,10 @@ rules for ability boxes*/
   top: var(--top);
   height: var(--height);
   width: var(--width);
-  background-color: #c5c6c7;
+  background-color: var(--tertiary-color);
   font-size: var(--textsize);
   text-align: center;
-  font-family: Arial, Helvetica, sans-serif;
-  font-family: scalasanslight;
+  font-family: var(--display-font-light);
   line-height: 11px;
   cursor: pointer;
 }
@@ -511,7 +534,9 @@ rules for ability boxes*/
   transform: var(--scale);
 }
 
-/* fonts and other extra's*/
+/* ==============================
+   10. TYPOGRAPHY
+   ============================== */
 @font-face {
   font-family: Scalasans;
   src: url(../../assets/otf/scalasans.otf);
@@ -527,6 +552,9 @@ rules for ability boxes*/
   src: url(../../assets/otf/scala-sans-light.otf);
 }
 
+/* ==============================
+   11. UTILITY CLASSES
+   ============================== */
 .not-selectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -542,7 +570,7 @@ rules for ability boxes*/
   top: var(--top);
   height: var(--height);
   width: var(--width);
-  background-color: #c5c6c7;
+  background-color: var(--tertiary-color);
   opacity: 0;
 }
 
@@ -552,9 +580,8 @@ rules for ability boxes*/
   left: var(--left);
   height: var(--height);
   width: var(--width);
-  font-family: Arial, Helvetica, sans-serif;
   text-align: var(--align);
-  font-family: scalasans;
+  font-family: var(--display-font);
   font-size: var(--fontsize);
   color: black;
   background-color: var(--color);
@@ -569,7 +596,9 @@ rules for ability boxes*/
   overflow: auto;
 }
 
-/*delete later*/
+/* ==============================
+   12. DEVELOPMENT/DEBUG TOOLS
+   ============================== */
 #measurer {
   position: absolute;
   left: 1300px;
@@ -588,6 +617,6 @@ rules for ability boxes*/
   height: 20px;
   cursor: move;
   z-index: 10;
-  background-color: #000000;
+  background-color: var(--line-color);
   color: #fff;
 }
