@@ -2,4 +2,4 @@
 
 ## TODO
 
-- Clean up style.css
+- Up to date for now
