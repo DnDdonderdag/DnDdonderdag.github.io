@@ -79,44 +79,33 @@ async function loadstate(result) {
 
         for (const property in result) {
             try {
-                // Handle calculation fields
-                if (property.includes("calculation")) {
-                    const fieldId = property.slice(0, property.length - 11);
-                    let field = document.getElementById(fieldId);
+                const isCalculation = property.endsWith("calculation") || property.endsWith(" calculation");
+                const fieldId = isCalculation ?
+                    property.endsWith(" calculation") ?
+                        property.slice(0, property.length - 12) :
+                        property.slice(0, property.length - 11) :
+                    property;
 
-                    // Try alternative selector for problematic IDs
-                    if (!field && fieldId.includes(" ")) {
-                        field = document.querySelector(`[id="${fieldId}"]`);
-                    }
-
-                    if (field) {
-                        field.textContent = result[property];
-                        successCount++;
-                    } else {
-                        throw new Error(`Field not found: ${fieldId}`);
-                    }
-                } else {
-                    let field = document.getElementById(property);
-
-                    // Try alternative selector for problematic IDs
-                    if (!field && property.includes(" ")) {
-                        field = document.querySelector(`[id="${property}"]`);
-                    }
-
-                    if (field) {
-                        // Handle different field types
-                        if (field.type === "checkbox" || field.type === "radio") {
-                            field.checked = result[property];
-                        } else if (field.value !== undefined) {
-                            field.value = result[property];
-                        } else {
-                            field.textContent = result[property];
-                        }
-                        successCount++;
-                    } else {
-                        throw new Error(`Field not found: ${property}`);
-                    }
+                let field = document.getElementById(fieldId);
+                if (!field && fieldId.includes(" ")) {
+                    field = document.querySelector(`[id="${fieldId}"]`);
                 }
+
+                if (!field) {
+                    throw new Error(`Field not found: ${fieldId}`);
+                }
+
+                if (isCalculation) {
+                    field.textContent = result[property];
+                } else if (field.type === "checkbox" || field.type === "radio") {
+                    field.checked = result[property];
+                } else if (field.value !== undefined) {
+                    field.value = result[property];
+                } else {
+                    field.textContent = result[property];
+                }
+
+                successCount++;
             } catch (error) {
                 console.log(`Error loading field: ${property}`, error.message);
                 failedFields.push(property);
