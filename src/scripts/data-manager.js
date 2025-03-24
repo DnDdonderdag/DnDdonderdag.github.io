@@ -77,18 +77,6 @@ async function loadstate(result) {
         let failCount = 0;
         let failedFields = [];
 
-        // Debug the specific problematic field
-        console.log("Looking for FEATURES & TRAITS element...");
-        const featuresElement = document.getElementById("FEATURES & TRAITS");
-        console.log("Element found:", featuresElement ? "Yes" : "No");
-
-        // Try alternative selector for problematic IDs
-        if (!featuresElement) {
-            console.log("Trying alternative selector...");
-            const altElement = document.querySelector('[id="FEATURES & TRAITS"]');
-            console.log("Found with alternative selector:", altElement ? "Yes" : "No");
-        }
-
         for (const property in result) {
             try {
                 // Handle calculation fields
