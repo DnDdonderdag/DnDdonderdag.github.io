@@ -1,2 +1,3 @@
-# Ignore local character files
-characters/
+# Character data files
+*.json
+!example-character.json
