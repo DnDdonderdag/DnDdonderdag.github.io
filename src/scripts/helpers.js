@@ -101,72 +101,122 @@ function updateCalculatedFields() {
     for (let i = 0; i < fields.length; i++) {
         field = fields[i]
         calculation = field.textContent
-        count = (calculation.match(/\[/g) || []).length;
-        for (let i = 0; i < count; i++) {
-            start = calculation.indexOf("[")
-            finish = calculation.indexOf("]")
-            replacementid = calculation.slice(start + 1, finish)
-            try {
-                replacementtext = document.getElementById(replacementid).value
-                replacement = (replacementtext == "") ? (0) : (replacementtext)
-                calculation = calculation.replace(calculation.slice(start, finish + 1), replacement)
-            }
-            catch { replacementtext = "" }
-        }
 
-        calculation = calculation.replaceAll("--", "+")
+        // Split calculation by lines and process each separately
+        const lines = calculation.split('\n');
+        const resultLines = [];
 
-        // Process and combine dice notation
-        const diceCounts = {};
-        const diceRegex = /(\d+)d(\d+)/g;
-        let match;
-        let modifiedCalculation = calculation;
+        for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+            let line = lines[lineIndex];
 
-        // Extract all dice references
-        while ((match = diceRegex.exec(calculation)) !== null) {
-            const count = parseInt(match[1]);
-            const die = match[2];
-
-            if (!diceCounts[die]) {
-                diceCounts[die] = 0;
-            }
-            diceCounts[die] += count;
-
-            // Remove the dice notation from the calculation
-            modifiedCalculation = modifiedCalculation.replace(match[0], "");
-        }
-
-        // Clean up the remaining calculation (remove extra operators)
-        modifiedCalculation = modifiedCalculation.replace(/\s*\+\s*\+\s*/g, "+").replace(/^\s*\+\s*|\s*\+\s*$/g, "");
-
-        // Evaluate the non-dice part
-        let numericValue = 0;
-        if (modifiedCalculation.trim() !== "") {
-            try {
-                numericValue = eval(modifiedCalculation);
-            } catch (error) {
-                field.value = calculation; // Return original if evaluation fails
+            // Skip empty lines but preserve them
+            if (line.trim() === '') {
+                resultLines.push('');
                 continue;
             }
-        }
 
-        // Build the final result
-        let result = "";
-        for (const die in diceCounts) {
-            if (diceCounts[die] > 0) {
-                result += (result ? " + " : "") + diceCounts[die] + "d" + die;
+            // Check if line contains math expression indicators
+            const hasMathExpression = /[\[\]\+\-\*\/\d]/.test(line);
+            if (!hasMathExpression) {
+                // Not a mathematical expression, preserve as is
+                resultLines.push(line);
+                continue;
             }
+
+            // Replace all references [...]
+            count = (line.match(/\[/g) || []).length;
+            for (let j = 0; j < count; j++) {
+                start = line.indexOf("[")
+                finish = line.indexOf("]")
+                replacementid = line.slice(start + 1, finish)
+                try {
+                    replacementtext = document.getElementById(replacementid).value
+                    replacement = (!replacementtext || replacementtext == "") ? "0" : replacementtext
+                    line = line.replace(line.slice(start, finish + 1), replacement)
+                }
+                catch {
+                    line = line.replace(line.slice(start, finish + 1), "0")
+                }
+            }
+
+            line = line.replaceAll("--", "+")
+
+            // Check if the calculation contains dice notation
+            const hasDiceNotation = /\d+d\d+/.test(line);
+
+            // Extract parts that look like math expressions
+            const mathParts = line.match(/([+\-*/]|\d+d\d+|\d+)+/g) || [];
+            const mathExpression = mathParts.join('');
+
+            if (!hasDiceNotation) {
+                try {
+                    const result = eval(line);
+                    resultLines.push((result === undefined || isNaN(result)) ? line : (result === 0 ? "0" : result));
+                    continue;
+                } catch (error) {
+                    resultLines.push(line);
+                    continue;
+                }
+            }
+
+            // Process multiplication operations
+            line = line.replace(/(\d+)\s*\*\s*(\d+)/g, (_, p1, p2) => {
+                return (parseInt(p1) * parseInt(p2)).toString();
+            });
+
+            // Process dice notation
+            const diceCounts = {};
+            const diceRegex = /(\d+)d(\d+)/g;
+            let match;
+            let modifiedLine = line;
+
+            while ((match = diceRegex.exec(line)) !== null) {
+                const count = parseInt(match[1]);
+                const die = match[2];
+
+                if (!diceCounts[die]) {
+                    diceCounts[die] = 0;
+                }
+                diceCounts[die] += count;
+
+                modifiedLine = modifiedLine.replace(match[0], "");
+            }
+
+            modifiedLine = modifiedLine.replace(/\s*\+\s*\+\s*/g, "+").replace(/^\s*\+\s*|\s*\+\s*$/g, "");
+
+            let numericValue = 0;
+            if (modifiedLine.trim() !== "") {
+                try {
+                    numericValue = eval(modifiedLine);
+                    if (numericValue === undefined || isNaN(numericValue)) {
+                        numericValue = 0;
+                    }
+                } catch (error) {
+                    resultLines.push(line);
+                    continue;
+                }
+            }
+
+            let result = "";
+            for (const die in diceCounts) {
+                if (diceCounts[die] > 0) {
+                    result += (result ? " + " : "") + diceCounts[die] + "d" + die;
+                }
+            }
+
+            if (numericValue === 0) {
+                if (result === "") {
+                    result = "0";
+                }
+            } else {
+                result += (numericValue > 0 ? " + " : " - ") + Math.abs(numericValue);
+            }
+
+            resultLines.push(result === "" ? "0" : result);
         }
 
-        if (numericValue !== 0) {
-            result += (numericValue > 0 ? " + " : " - ") + Math.abs(numericValue);
-        }
-
-        if (result === "") {
-            field.value = calculation; // If we couldn't parse anything, return original
-        } else {
-            field.value = result;
-        }
+        // Combine the results with preserved line structure
+        field.value = resultLines.join('\n');
     }
 }
 
