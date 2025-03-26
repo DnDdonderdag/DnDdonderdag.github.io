@@ -116,48 +116,56 @@ function updateCalculatedFields() {
 
         calculation = calculation.replaceAll("--", "+")
 
-        // Handle dice notation
-        const diceRegex = /(\d+d\d+)/g;
-        const diceMatches = calculation.match(diceRegex);
+        // Process and combine dice notation
+        const diceCounts = {};
+        const diceRegex = /(\d+)d(\d+)/g;
+        let match;
+        let modifiedCalculation = calculation;
 
-        if (diceMatches) {
-            // Store the dice notation
-            const diceNotation = diceMatches[0];
+        // Extract all dice references
+        while ((match = diceRegex.exec(calculation)) !== null) {
+            const count = parseInt(match[1]);
+            const die = match[2];
 
-            // Replace dice notation with placeholder for evaluation
-            let evalString = calculation.replace(diceRegex, "0");
+            if (!diceCounts[die]) {
+                diceCounts[die] = 0;
+            }
+            diceCounts[die] += count;
 
+            // Remove the dice notation from the calculation
+            modifiedCalculation = modifiedCalculation.replace(match[0], "");
+        }
+
+        // Clean up the remaining calculation (remove extra operators)
+        modifiedCalculation = modifiedCalculation.replace(/\s*\+\s*\+\s*/g, "+").replace(/^\s*\+\s*|\s*\+\s*$/g, "");
+
+        // Evaluate the non-dice part
+        let numericValue = 0;
+        if (modifiedCalculation.trim() !== "") {
             try {
-                // Evaluate the numeric portion
-                const numericValue = eval(evalString);
-
-                // Format the result with dice notation
-                if (numericValue === 0) {
-                    field.value = diceNotation;
-                } else if (numericValue > 0) {
-                    field.value = `${diceNotation} + ${numericValue}`;
-                } else {
-                    field.value = `${diceNotation} - ${Math.abs(numericValue)}`;
-                }
+                numericValue = eval(modifiedCalculation);
             } catch (error) {
-                field.value = calculation;
+                field.value = calculation; // Return original if evaluation fails
+                continue;
             }
+        }
+
+        // Build the final result
+        let result = "";
+        for (const die in diceCounts) {
+            if (diceCounts[die] > 0) {
+                result += (result ? " + " : "") + diceCounts[die] + "d" + die;
+            }
+        }
+
+        if (numericValue !== 0) {
+            result += (numericValue > 0 ? " + " : " - ") + Math.abs(numericValue);
+        }
+
+        if (result === "") {
+            field.value = calculation; // If we couldn't parse anything, return original
         } else {
-            // Handle normal calculation (no dice notation)
-            if (calculation == "") {
-                field.value = ""
-            } else {
-                try {
-                    val = eval(calculation);
-                    if (isNaN(val)) {
-                        field.value = calculation
-                    } else {
-                        field.value = val
-                    }
-                } catch (error) {
-                    field.value = calculation;
-                }
-            }
+            field.value = result;
         }
     }
 }
