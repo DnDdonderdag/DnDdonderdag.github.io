@@ -188,7 +188,7 @@ function createHeaderpage5(top, left) {
     const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
 
-    createFormField(top + 62, left + 55, 140, 22, "charactername2", "input", 18, "#dde4ff", "center", maindiv, false, "", false)
+    createFormField(top + 62, left + 55, 140, 22, "inventorycontainer", "input", 18, "#dde4ff", "center", maindiv, false, "", false)
 
     createText(top + 93, left + 66, 20, 100, "INVENTORY CONTAINER", 8, "#000000", "left", maindiv)
     tabscontent = ["MAX CARRY WEIGHT", "CURRENT DAY", "CURRENT CARRY WEIGHT", "CURRENT WEEKDAY"]
