@@ -17,13 +17,15 @@ function createHeaderpage1(top, left) {
     const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
 
-
     const characternameform = document.createElement("input");
     characternameform.className = "charnameform save not-selectable sizeadjustinput";
     characternameform.id = "charactername"
     characternameform.style = "--top:" + String(top + 51) + "px; --left:" + String(left + 40) + "px; --boxlength:" + String(160) + "; --startfont:" + String(18)
     characternameform.spellcheck = false
-    characternameform.onkeyup = function () { update() };
+    characternameform.onkeyup = function () {
+        synchronizeNames(characternameform.id);
+        update();
+    };
     maindiv.appendChild(characternameform);
 
     tabs = ["class & level", "background", "player name", "race", "alignment", "experience points"]
@@ -63,9 +65,6 @@ function createHeaderpage1(top, left) {
     browse.addEventListener('change', unpackjson, false);
     maindiv.appendChild(browse);
 
-
-
-
 }
 
 function createHeaderpage2(top, left) {
@@ -81,9 +80,6 @@ function createHeaderpage2(top, left) {
     maindiv.appendChild(headerchar);
     const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
-
-
-
 
     const spellcastingclassform = document.createElement("input");
     spellcastingclassform.className = "charnameform save not-selectable sizeadjustinput";
@@ -105,8 +101,6 @@ function createHeaderpage2(top, left) {
     createText(top + 95, left + 460, 28, 65, "SPELL SAVE DC", 7, "#000000", "center", maindiv)
     createText(top + 95, left + 543, 28, 65, "SPELL ATTACK BONUS", 7, "#000000", "center", maindiv)
 
-
-
 }
 
 function createHeaderpage3(top, left) {
@@ -122,9 +116,6 @@ function createHeaderpage3(top, left) {
     maindiv.appendChild(headerchar);
     const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
-
-
-
 
     createFormField(top + 57, left + 85, 61, 28, "SPELLCASTING ABILITY2", "input", 20, "#dde4ff", "center", maindiv, false, "", true)
     createFormField(top + 57, left + 196, 61, 28, "SPELL SAVE DC2", "input", 20, "#dde4ff", "center", maindiv, true, "[mod]+ 8 + [PROF]", true)
@@ -152,10 +143,13 @@ function createHeaderpage4(top, left) {
 
     const characternameform = document.createElement("input");
     characternameform.className = "charnameform save not-selectable sizeadjustinput";
-    characternameform.id = "charactername3"
+    characternameform.id = "charactername_2" // Changed ID to avoid duplicate
     characternameform.style = "--top:" + String(top + 51) + "px; --left:" + String(left + 40) + "px; --boxlength:" + String(160) + "; --startfont:" + String(18)
     characternameform.spellcheck = false
-    characternameform.onkeyup = function () { update() };
+    characternameform.onkeyup = function () {
+        synchronizeNames(characternameform.id);
+        update();
+    };
     maindiv.appendChild(characternameform);
 
     tabs = ["age", "height", "weight", "eyes", "skin", "hair"]
@@ -171,15 +165,13 @@ function createHeaderpage4(top, left) {
         headertabform.id = tabs[i].toUpperCase() + " tab"
         headertabform.style = "--top:" + String(top + 38 + Math.floor(i / 3) * 29) + "px; --left:" + String(left + 290 + i % 3 * 110) + "px; --boxlength:" + String(90) + "; --startfont:" + String(11)
         headertabform.spellcheck = false
-        headertabform.onkeyup = function () { update() };
+        headertabform.onkeyup = function () {
+            synchronizePhenome("");
+            update()
+        };
         maindiv.appendChild(headertabform);
     }
     createText(top + 83, left + 66, 20, 70, "CHARACTER NAME", 8, "#000000", "left", maindiv)
-
-
-
-
-
 }
 
 function createHeaderpage5(top, left) {
@@ -195,7 +187,6 @@ function createHeaderpage5(top, left) {
     maindiv.appendChild(headerchar);
     const currentDiv = document.getElementById("index");
     document.body.insertBefore(maindiv, null);
-
 
     createFormField(top + 62, left + 55, 140, 22, "charactername2", "input", 18, "#dde4ff", "center", maindiv, false, "", false)
 
@@ -217,8 +208,51 @@ function createHeaderpage5(top, left) {
 
         }
     }
+}
 
+function createHeaderpage6(top, left) {
+    const maindiv = document.createElement("div");
+    maindiv.className = "header"
 
+    const headerchar = document.createElement("img");
+    headerchar.className = "header not-selectable"
+    headerchar.src = "assets/svg/headerP4.svg";
+    headerchar.alt = "headerchar";
+    headerchar.draggable = false;
+    headerchar.style = "--top:" + String(top) + "px; --left:" + String(left) + "px;"
+    maindiv.appendChild(headerchar);
+    const currentDiv = document.getElementById("index");
+    document.body.insertBefore(maindiv, null);
 
+    const characternameform = document.createElement("input");
+    characternameform.className = "charnameform save not-selectable sizeadjustinput";
+    characternameform.id = "charactername_3" // Changed ID to avoid duplicate
+    characternameform.style = "--top:" + String(top + 51) + "px; --left:" + String(left + 40) + "px; --boxlength:" + String(160) + "; --startfont:" + String(18)
+    characternameform.spellcheck = false
+    characternameform.onkeyup = function () {
+        synchronizeNames(characternameform.id);
+        update();
+    };
+    maindiv.appendChild(characternameform);
 
+    tabs = ["age", "height", "weight", "eyes", "skin", "hair"]
+    for (let i = 0; i < tabs.length; i++) {
+        const tabname = document.createElement("div");
+        tabname.className = "headertab not-selectable"
+        tabname.style = "--top:" + String(top + 54 + Math.floor(i / 3) * 29) + "px; --left:" + String(left + 290 + i % 3 * 110) + "px;"
+        tabname.textContent = tabs[i].toUpperCase()
+        maindiv.appendChild(tabname);
+
+        const headertabform = document.createElement("input");
+        headertabform.className = "headertabform save not-selectable sizeadjustinput";
+        headertabform.id = tabs[i].toUpperCase() + " tab" + "_2"
+        headertabform.style = "--top:" + String(top + 38 + Math.floor(i / 3) * 29) + "px; --left:" + String(left + 290 + i % 3 * 110) + "px; --boxlength:" + String(90) + "; --startfont:" + String(11)
+        headertabform.spellcheck = false
+        headertabform.onkeyup = function () {
+            synchronizePhenome("_2");
+            update()
+        };
+        maindiv.appendChild(headertabform);
+    }
+    createText(top + 83, left + 66, 20, 70, "CHARACTER NAME", 8, "#000000", "left", maindiv)
 }

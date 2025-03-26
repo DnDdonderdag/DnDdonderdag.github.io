@@ -118,6 +118,8 @@ async function loadstate(result) {
             console.log("Failed fields:", failedFields);
         }
         update(); // Update calculations after loading
+        synchronizeNames("charactername"); // Synchronize duplicate fields
+        synchronizePhenome(""); // Synchronize duplicate fields
     }
 }
 

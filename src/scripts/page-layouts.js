@@ -352,7 +352,7 @@ function createNotesPage(top, left) {
     const maindiv = document.createElement("div");
     maindiv.className = "notes page";
 
-    createHeaderpage4(top - 120, left - 30);
+    createHeaderpage6(top - 120, left - 30);
 
     // Create main notes sections in a vertical layout
     const noteCategories = ["GENERAL", "LOCATIONS", "NPCS", "QUESTS", "LORE"];

@@ -354,3 +354,45 @@ function createTooltips() {
 
     document.body.appendChild(tooltipsdiv);
 }
+
+function synchronizeNames(sourceId = "charactername") {
+    const fields = [
+        document.getElementById("charactername"),
+        document.getElementById("charactername_2"),
+        document.getElementById("charactername_3")
+    ];
+
+    // Get the value from the source field
+    const sourceValue = fields.find(f => f && f.id === sourceId)?.value || "";
+
+    // Update all other fields
+    fields.forEach(field => {
+        if (field && field.id !== sourceId) {
+            field.value = sourceValue;
+        }
+    });
+}
+
+function synchronizePhenome(sourceId = "") {
+    const tabs = ["age", "height", "weight", "eyes", "skin", "hair"]
+
+    // Replace Python-style loop with JavaScript syntax
+    tabs.forEach(tab => {
+        tabId = tab.toUpperCase() + " tab" + sourceId;
+
+        const fields = [
+            document.getElementById(tab.toUpperCase() + " tab"),
+            document.getElementById(tab.toUpperCase() + " tab" + "_2")
+        ]
+
+        // Get the value from the source field
+        const sourceValue = fields.find(f => f && f.id === tabId)?.value || "";
+
+        // Update all other fields
+        fields.forEach(field => {
+            if (field && field.id !== tabId) {
+                field.value = sourceValue;
+            }
+        });
+    });
+}
