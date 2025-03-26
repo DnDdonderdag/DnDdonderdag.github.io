@@ -108,26 +108,58 @@ function updateCalculatedFields() {
             replacementid = calculation.slice(start + 1, finish)
             try {
                 replacementtext = document.getElementById(replacementid).value
-                replacement = (replacementtext == "") ? (0) : (parseInt(replacementtext))
-                calculation = calculation.replace(calculation.slice(start, finish + 1), String(replacement))
+                replacement = (replacementtext == "") ? (0) : (replacementtext)
+                calculation = calculation.replace(calculation.slice(start, finish + 1), replacement)
             }
             catch { replacementtext = "" }
-
         }
+
         calculation = calculation.replaceAll("--", "+")
-        if (calculation == "") { field.value = "" }
-        else {
+
+        // Handle dice notation
+        const diceRegex = /(\d+d\d+)/g;
+        const diceMatches = calculation.match(diceRegex);
+
+        if (diceMatches) {
+            // Store the dice notation
+            const diceNotation = diceMatches[0];
+
+            // Replace dice notation with placeholder for evaluation
+            let evalString = calculation.replace(diceRegex, "0");
+
             try {
-                val = eval(calculation)
-                if (isNaN(val)) { field.value = calculation }
-                else { field.value = eval(calculation) }
+                // Evaluate the numeric portion
+                const numericValue = eval(evalString);
+
+                // Format the result with dice notation
+                if (numericValue === 0) {
+                    field.value = diceNotation;
+                } else if (numericValue > 0) {
+                    field.value = `${diceNotation} + ${numericValue}`;
+                } else {
+                    field.value = `${diceNotation} - ${Math.abs(numericValue)}`;
+                }
             } catch (error) {
-                field.value = calculation
+                field.value = calculation;
+            }
+        } else {
+            // Handle normal calculation (no dice notation)
+            if (calculation == "") {
+                field.value = ""
+            } else {
+                try {
+                    val = eval(calculation);
+                    if (isNaN(val)) {
+                        field.value = calculation
+                    } else {
+                        field.value = val
+                    }
+                } catch (error) {
+                    field.value = calculation;
+                }
             }
         }
-
     }
-
 }
 
 function updatemodifier() {
