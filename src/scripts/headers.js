@@ -226,7 +226,7 @@ function createHeaderpage6(top, left) {
 
     const characternameform = document.createElement("input");
     characternameform.className = "charnameform save not-selectable sizeadjustinput";
-    characternameform.id = "charactername_3" // Changed ID to avoid duplicate
+    characternameform.id = "charactername_2" // Changed ID to avoid duplicate
     characternameform.style = "--top:" + String(top + 51) + "px; --left:" + String(left + 40) + "px; --boxlength:" + String(160) + "; --startfont:" + String(18)
     characternameform.spellcheck = false
     characternameform.onkeyup = function () {

@@ -12,7 +12,7 @@ class Header {
         this.maindiv.className = "header";
     }
 
-    render() {
+    forward() {
         // Create the header image
         const headerchar = document.createElement("img");
         headerchar.className = "header not-selectable";
