@@ -160,8 +160,15 @@ function processCalculationLine(line) {
         // If it's a pure calculation, return just the result without any surrounding text
         return formattedResult;
     } else {
-        // Return the first text part followed by the result and any trailing text
-        return textParts[0] + formattedResult + textParts.slice(1).join('');
+        // Normalize spaces: trim right space from first part, trim left space from last part
+        const firstPart = textParts[0].replace(/\s+$/, '');
+        const lastParts = textParts.slice(1).join('').replace(/^\s+/, '');
+
+        // Add a single space between text and calculation if needed
+        const spacer = firstPart && firstPart.length > 0 ? ' ' : '';
+        const endSpacer = lastParts && lastParts.length > 0 ? ' ' : '';
+
+        return firstPart + spacer + formattedResult + endSpacer + lastParts;
     }
 }
 
