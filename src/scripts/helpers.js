@@ -116,10 +116,10 @@ function processCalculationLine(line) {
     if (line.trim() === '') return '';
 
     // If no calculation markers are present, return the line as is
-    if (!/[\[\]\+\-\*\/\d\.]/.test(line)) return line;
+    if (!/[\[\]\+\-\*\/\d\.\,]/.test(line)) return line;
 
-    // Extract all calculation parts (dice notation, numbers, references)
-    const calculationRegex = /(\d+d\d+|\[[^\]]+\]|[\+\-\*\/]|\d+\.\d+|\d+)/g;
+    // Extract all calculation parts (dice notation, numbers, references) - now supporting comma decimals
+    const calculationRegex = /(\d+d\d+|\[[^\]]+\]|[\+\-\*\/]|\d+[\,\.]\d+|\d+)/g;
     const calcParts = [];
     const textParts = [];
 
@@ -145,7 +145,11 @@ function processCalculationLine(line) {
 
     // Replace all references
     const processedCalcPart = replaceReferences(calculationPart);
-    const cleanedCalcPart = processedCalcPart.replaceAll("--", "+");
+
+    // Normalize comma decimals to dot decimals
+    const normalizedCalcPart = processedCalcPart.replace(/(\d+),(\d+)/g, '$1.$2');
+
+    const cleanedCalcPart = normalizedCalcPart.replaceAll("--", "+");
 
     // Process the calculation part to get dice and numeric results
     const result = processCalculationExpression(cleanedCalcPart);
@@ -340,8 +344,12 @@ function replaceReferences(line) {
                 element = elementAlt;
             }
 
-
             let replacementText = element.value;
+            // Normalize comma decimals to dot decimals before parsing
+            if (replacementText && replacementText.includes(',')) {
+                replacementText = replacementText.replace(/,/g, '.');
+            }
+
             // Ensure we get a numeric value if possible, preserving decimal points
             const numericValue = parseFloat(replacementText);
             const replacement = (replacementText === "" || isNaN(numericValue)) ? "0" : numericValue.toString();
@@ -356,7 +364,6 @@ function replaceReferences(line) {
             referenceRegex.lastIndex = 0;
         }
     }
-
 
     return processedLine;
 }
