@@ -173,7 +173,10 @@ function processCalculationLine(line) {
 }
 
 function processCalculationExpression(expression) {
-    // Handle dice multiplication (e.g., 1d12*2 → 2d12)
+    // Apply distributive multiplication over brackets first
+    expression = processDistributiveMultiplication(expression);
+
+    // Handle dice multiplication (e.g., 1d12*2 → 2d12 and 2*1d12 → 2d12)
     expression = processDiceMultiplication(expression);
 
     // Extract all dice notations
@@ -214,20 +217,71 @@ function processCalculationExpression(expression) {
 }
 
 /**
- * Process dice multiplication expressions (e.g., 1d12*2 → 2d12)
+ * Process dice multiplication expressions (e.g., 1d12*2 → 2d12 and 2*1d12 → 2d12)
  * @param {string} expression - The calculation expression
  * @returns {string} - The expression with dice multiplication resolved
  */
 function processDiceMultiplication(expression) {
-    // Match pattern: <number>d<number>*<number> or <number>d<number> * <number>
-    const diceMultRegex = /(\d+)d(\d+)\s*\*\s*(\d+)/g;
-
-    return expression.replace(diceMultRegex, (match, count, die, multiplier) => {
-        // Calculate the new dice count
+    // First handle: <number>d<number>*<number> (right multiplication)
+    const rightMultRegex = /(\d+)d(\d+)\s*\*\s*(\d+)/g;
+    expression = expression.replace(rightMultRegex, (match, count, die, multiplier) => {
         const newCount = parseInt(count) * parseInt(multiplier);
-        // Return the new dice notation
         return `${newCount}d${die}`;
     });
+
+    // Then handle: <number>*<number>d<number> (left multiplication)
+    const leftMultRegex = /(\d+)\s*\*\s*(\d+)d(\d+)/g;
+    expression = expression.replace(leftMultRegex, (match, multiplier, count, die) => {
+        const newCount = parseInt(multiplier) * parseInt(count);
+        return `${newCount}d${die}`;
+    });
+
+    return expression;
+}
+
+/**
+ * Process distributive multiplication over brackets
+ * e.g., 2*(1d6+3) → 2d6+6
+ * @param {string} expression - The calculation expression
+ * @returns {string} - The expression with distributive multiplication resolved
+ */
+function processDistributiveMultiplication(expression) {
+    // Match pattern: <number>*(<expression>) or <number> * (<expression>)
+    const distributiveRegex = /(\d+)\s*\*\s*\(([^()]+)\)/g;
+
+    // Keep applying the transformation until no more matches are found
+    let prevExpression = "";
+    let currentExpression = expression;
+
+    while (prevExpression !== currentExpression) {
+        prevExpression = currentExpression;
+
+        currentExpression = prevExpression.replace(distributiveRegex, (match, multiplier, innerExpression) => {
+            const multiplierNum = parseInt(multiplier);
+
+            // Process dice notation inside brackets (e.g., 2*(1d6) → 2d6)
+            const diceRegex = /(\d+)d(\d+)/g;
+            let diceProcessed = innerExpression.replace(diceRegex, (diceMatch, count, die) => {
+                return `${parseInt(count) * multiplierNum}d${die}`;
+            });
+
+            // Process numeric terms inside brackets
+            const numericRegex = /([\+\-])\s*(\d+)/g;
+            let finalExpression = diceProcessed.replace(numericRegex, (numMatch, operator, number) => {
+                return `${operator} ${parseInt(number) * multiplierNum}`;
+            });
+
+            // Handle the first term if it's a number without a sign
+            const firstTermRegex = /^(\d+)/;
+            finalExpression = finalExpression.replace(firstTermRegex, (termMatch, number) => {
+                return `${parseInt(number) * multiplierNum}`;
+            });
+
+            return finalExpression;
+        });
+    }
+
+    return currentExpression;
 }
 
 function formatResult(dice, numericValue) {
