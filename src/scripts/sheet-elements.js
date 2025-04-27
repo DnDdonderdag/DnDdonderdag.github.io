@@ -161,7 +161,7 @@ function filldarkbox(top, left) {
     createText(238, 3, 12, 35, "TOTAL", 7.5, "#c5c6c7", "right", maindiv)
     createFormField(171, 15, 165, 33, "TEMPORARY HIT POINTS1", "textarea", "28", "#dde4ff", "center", maindiv, false, "", true, "")
     createFormField(15, 75, 38, 38, "INITIATIVE1", "input", 25, "#dde4ff", "center", maindiv, true, "[DEXmod]", true, "")
-    createFormField(15, 141, 38, 38, "SPEED1", "input", 25, "#dde4ff", "center", maindiv, false, "", true, "")
+    createFormField(15, 141, 38, 38, "SPEED1", "input", 25, "#dde4ff", "center", maindiv, true, "", true, "")
 
     //death saves field
     const line = document.createElement("img");
