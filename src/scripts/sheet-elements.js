@@ -207,23 +207,28 @@ function fillattackandspellcasting(width, height, top, left) {
 }
 
 function fillEquipmentSlot(top, left, amount, name, parentdiv, addedclass) {
+    height = 45
     for (let i = 0; i < amount; i++) {
         if (name == "armor") {
-            createFormField(top + 5 + 45 * i, left + 70, 105, 40, name + String(i) + "name", "input", 20, "#dde4ff", "left", parentdiv, false, "", false, addedclass)
-            createFormField(top + 5 + 45 * i, left + 25, 40, 40, name + String(i), "input", 25, "#c5c6c7", "center", parentdiv, true, "", false, addedclass)
+            createFormField(top + 5 + height * i, left + 70, 105, 40, name + String(i) + "name", "input", 20, "#dde4ff", "left", parentdiv, false, "", false, addedclass)
+            createFormField(top + 5 + height * i, left + 25, 40, 40, name + String(i), "input", 25, "#c5c6c7", "center", parentdiv, true, "", false, addedclass)
         }
         if (name == "weapons") {
-            createFormField(top + 5 + 45 * i, left + 25, 150, 40, "attackname" + String(i) + "3", "input", 18, "#dde4ff", "left", parentdiv, false, "", true, addedclass)
+            createFormField(top + 5 + height * i, left + 25, 150, 40, "attackname" + String(i) + "3", "input", 18, "#dde4ff", "left", parentdiv, false, "", true, addedclass)
         }
         if (name == "attunements") {
-            createFormField(top + 5 + 45 * i, left + 25, 150, 40, name + String(i) + "3", "input", 18, "#dde4ff", "left", parentdiv, false, "", true, addedclass)
+            createFormField(top + 5 + height * i, left + 25, 150, 40, name + String(i) + "3", "input", 18, "#dde4ff", "left", parentdiv, false, "", true, addedclass)
         }
-        createButton(top + 33 + 45 * i, left + 10, 10, 0, name + String(i) + "button", genericbuttonclick, parentdiv, "")
+        if (name == "spell effects") {
+            height = 40
+            createFormField(top + 10 + height * i, left + 25, 150, 35, name + String(i), "input", 18, "#dde4ff", "left", parentdiv, false, "", true, addedclass)
+        }
+        createButton(top + 33 + height * i, left + 10, 10, 0, name + String(i) + "button", genericbuttonclick, parentdiv, "")
         line = document.createElement("div");
         line.className = "genericline not-selectable"
         line.alt = "line";
         line.draggable = false;
-        line.style = "--top:" + String(top + 47 + 45 * i) + "px; --left:" + String(left + 10) + "px; --width:" + String(170) + "px; --height:" + String(1) + "px"
+        line.style = "--top:" + String(top + 47 + height * i) + "px; --left:" + String(left + 10) + "px; --width:" + String(170) + "px; --height:" + String(1) + "px"
         parentdiv.appendChild(line);
 
     }

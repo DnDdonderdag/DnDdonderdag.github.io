@@ -290,10 +290,13 @@ function createInventoryPage(top, left) {
     createFormField(top + 200, left + 220, 175, 175, "questitems", "textarea", "16", "#dde4ff", "left", maindiv, true, "", false, "");
     createText(top + 382, left + 220, 15, 175, "QUEST ITEMS", "8", "#000000", "center", maindiv, "");
 
-    createFrame(410, 355, top + 405, left, false, false, "treasures", "page1", "textarea", "");
-    createFormField(top + 410, left + 10, 188, 330, "treasures1", "textarea", "12", "#dde4ff", "left", maindiv, true, "", false, "");
-    createFormField(top + 410, left + 208, 188, 330, "treasures2", "textarea", "12", "#dde4ff", "left", maindiv, true, "", false, "");
-    createText(top + 747, left + 10, 15, 385, "TREASURES", "8", "#000000", "center", maindiv, "");
+    createFrame(200, 355, top + 405, left, false, false, "treasures", "page1", "textarea", "");
+    createFormField(top + 410, left + 10, 175, 330, "treasures1", "textarea", "12", "#dde4ff", "left", maindiv, true, "", false, "");
+    createText(top + 747, left + 10, 15, 175, "TREASURES", "8", "#000000", "center", maindiv, "");
+
+    createFrame(210, 355, top + 405, left + 210, false, false, "spell effects", "page1", "textarea", "");
+    createText(top + 747, left, 175, 340, "SPELL EFFECTS", "8", "#000000", "right", maindiv, "");
+    fillEquipmentSlot(top + 410, left + 215, 8, "spell effects", maindiv, "");
 
     createFrame(190, 200, top + 195, left + 430, false, false, "armor", "page1", "textarea", "");
     createText(top + 195 + 200 - 15, left + 440, 15, 165, "ARMOR", "12", "#000000", "right", maindiv, "");
