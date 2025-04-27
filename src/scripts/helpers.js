@@ -327,7 +327,7 @@ function replaceReferences(line) {
 
         try {
             // Attempt to find the element by its ID
-            const element = document.getElementById(replacementId);
+            let element = document.getElementById(replacementId);
             if (!element) {
                 // If element not found directly, try replacing spaces with underscores or removing them
                 // This part depends on how IDs with spaces are actually handled/stored.
@@ -344,15 +344,28 @@ function replaceReferences(line) {
                 element = elementAlt;
             }
 
-            let replacementText = element.value;
+            let replacementText;
+
+            // Special handling for button elements
+            if (element.tagName === 'BUTTON' ||
+                element.className.includes('button') ||
+                element.id.includes('button')) {
+                // For buttons, use the value property (0 or 1) directly
+                replacementText = element.value || "0";
+            } else {
+                // For other elements, use the value property
+                replacementText = element.value;
+            }
+
             // Normalize comma decimals to dot decimals before parsing
-            if (replacementText && replacementText.includes(',')) {
+            if (replacementText && typeof replacementText === 'string' && replacementText.includes(',')) {
                 replacementText = replacementText.replace(/,/g, '.');
             }
 
             // Ensure we get a numeric value if possible, preserving decimal points
             const numericValue = parseFloat(replacementText);
             const replacement = (replacementText === "" || isNaN(numericValue)) ? "0" : numericValue.toString();
+
             // Replace only the first occurrence in this iteration to avoid issues with nested/repeated patterns
             processedLine = processedLine.replace(fullMatch, replacement);
             // Reset regex lastIndex to restart search from the beginning after replacement
