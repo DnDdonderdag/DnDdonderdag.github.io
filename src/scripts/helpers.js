@@ -153,8 +153,16 @@ function processCalculationLine(line) {
     // Format the result
     const formattedResult = formatResult(result.dice, result.numeric);
 
-    // Return the first text part followed by the result
-    return textParts[0] + formattedResult + textParts.slice(1).join('');
+    // Check if this is a pure calculation (all parts are calculation related)
+    const isPureCalculation = textParts.every(part => part.trim() === '');
+
+    if (isPureCalculation) {
+        // If it's a pure calculation, return just the result without any surrounding text
+        return formattedResult;
+    } else {
+        // Return the first text part followed by the result and any trailing text
+        return textParts[0] + formattedResult + textParts.slice(1).join('');
+    }
 }
 
 function processCalculationExpression(expression) {
