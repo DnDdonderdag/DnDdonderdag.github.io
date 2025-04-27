@@ -119,7 +119,8 @@ function processCalculationLine(line) {
     if (!/[\[\]\+\-\*\/\d]/.test(line)) return line;
 
     // Extract all calculation parts (dice notation, numbers, references)
-    const calculationRegex = /(\d+d\d+|\[\w+\]|[\+\-\*\/]|\d+)/g;
+    // Updated regex to allow spaces in references: \[[^\]]+\]
+    const calculationRegex = /(\d+d\d+|\[[^\]]+\]|[\+\-\*\/]|\d+)/g;
     const calcParts = [];
     const textParts = [];
 
@@ -312,28 +313,51 @@ function formatResult(dice, numericValue) {
 
 function replaceReferences(line) {
     let processedLine = line;
-    const count = (processedLine.match(/\[/g) || []).length;
+    // Use a regex to find all bracketed references, including those with spaces
+    const referenceRegex = /\[([^\]]+)\]/g;
+    let match;
 
-    for (let j = 0; j < count; j++) {
-        const start = processedLine.indexOf("[");
-        const finish = processedLine.indexOf("]");
-        if (start === -1 || finish === -1) break;
-
-        const replacementId = processedLine.slice(start + 1, finish);
+    // Keep replacing until no more matches are found
+    while ((match = referenceRegex.exec(processedLine)) !== null) {
+        const fullMatch = match[0]; // e.g., "[EXPERIENCE POINTS tab]"
+        const replacementId = match[1]; // e.g., "EXPERIENCE POINTS tab"
 
         try {
+            // Attempt to find the element by its ID
             const element = document.getElementById(replacementId);
-            if (!element) throw new Error("Element not found");
+            if (!element) {
+                // If element not found directly, try replacing spaces with underscores or removing them
+                // This part depends on how IDs with spaces are actually handled/stored.
+                // Assuming IDs might have spaces replaced or removed:
+                let potentialId = replacementId.replace(/\s+/g, '_'); // Try with underscores
+                let elementAlt = document.getElementById(potentialId);
+                if (!elementAlt) {
+                    potentialId = replacementId.replace(/\s+/g, ''); // Try with spaces removed
+                    elementAlt = document.getElementById(potentialId);
+                }
+
+                if (!elementAlt) throw new Error(`Element with ID variations for "${replacementId}" not found`);
+                // Use the found alternative element
+                element = elementAlt;
+            }
+
 
             let replacementText = element.value;
             // Ensure we get a numeric value if possible
             const numericValue = parseFloat(replacementText);
             const replacement = (replacementText === "" || isNaN(numericValue)) ? "0" : numericValue.toString();
-            processedLine = processedLine.replace(processedLine.slice(start, finish + 1), replacement);
-        } catch {
-            processedLine = processedLine.replace(processedLine.slice(start, finish + 1), "0");
+            // Replace only the first occurrence in this iteration to avoid issues with nested/repeated patterns
+            processedLine = processedLine.replace(fullMatch, replacement);
+            // Reset regex lastIndex to restart search from the beginning after replacement
+            referenceRegex.lastIndex = 0;
+        } catch (e) {
+            console.warn(`Could not find element or value for reference: ${replacementId}. Replacing with "0". Error: ${e.message}`);
+            processedLine = processedLine.replace(fullMatch, "0");
+            // Reset regex lastIndex
+            referenceRegex.lastIndex = 0;
         }
     }
+
 
     return processedLine;
 }
