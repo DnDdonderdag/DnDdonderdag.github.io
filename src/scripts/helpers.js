@@ -173,6 +173,9 @@ function processCalculationLine(line) {
 }
 
 function processCalculationExpression(expression) {
+    // Handle dice multiplication (e.g., 1d12*2 → 2d12)
+    expression = processDiceMultiplication(expression);
+
     // Extract all dice notations
     const diceResults = {};
     const diceRegex = /(\d+)d(\d+)/g;
@@ -208,6 +211,23 @@ function processCalculationExpression(expression) {
     }
 
     return { dice: diceResults, numeric: numericValue };
+}
+
+/**
+ * Process dice multiplication expressions (e.g., 1d12*2 → 2d12)
+ * @param {string} expression - The calculation expression
+ * @returns {string} - The expression with dice multiplication resolved
+ */
+function processDiceMultiplication(expression) {
+    // Match pattern: <number>d<number>*<number> or <number>d<number> * <number>
+    const diceMultRegex = /(\d+)d(\d+)\s*\*\s*(\d+)/g;
+
+    return expression.replace(diceMultRegex, (match, count, die, multiplier) => {
+        // Calculate the new dice count
+        const newCount = parseInt(count) * parseInt(multiplier);
+        // Return the new dice notation
+        return `${newCount}d${die}`;
+    });
 }
 
 function formatResult(dice, numericValue) {
