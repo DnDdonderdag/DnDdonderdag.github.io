@@ -116,11 +116,10 @@ function processCalculationLine(line) {
     if (line.trim() === '') return '';
 
     // If no calculation markers are present, return the line as is
-    if (!/[\[\]\+\-\*\/\d]/.test(line)) return line;
+    if (!/[\[\]\+\-\*\/\d\.]/.test(line)) return line;
 
     // Extract all calculation parts (dice notation, numbers, references)
-    // Updated regex to allow spaces in references: \[[^\]]+\]
-    const calculationRegex = /(\d+d\d+|\[[^\]]+\]|[\+\-\*\/]|\d+)/g;
+    const calculationRegex = /(\d+d\d+|\[[^\]]+\]|[\+\-\*\/]|\d+\.\d+|\d+)/g;
     const calcParts = [];
     const textParts = [];
 
@@ -343,7 +342,7 @@ function replaceReferences(line) {
 
 
             let replacementText = element.value;
-            // Ensure we get a numeric value if possible
+            // Ensure we get a numeric value if possible, preserving decimal points
             const numericValue = parseFloat(replacementText);
             const replacement = (replacementText === "" || isNaN(numericValue)) ? "0" : numericValue.toString();
             // Replace only the first occurrence in this iteration to avoid issues with nested/repeated patterns
