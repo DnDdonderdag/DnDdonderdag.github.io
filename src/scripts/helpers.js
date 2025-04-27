@@ -97,37 +97,164 @@ function updategenericbuttons() {
 }
 
 function updateCalculatedFields() {
-    fields = document.getElementsByClassName("calculated")
+    const fields = document.getElementsByClassName("calculated");
     for (let i = 0; i < fields.length; i++) {
-        field = fields[i]
-        calculation = field.textContent
-        count = (calculation.match(/\[/g) || []).length;
-        for (let i = 0; i < count; i++) {
-            start = calculation.indexOf("[")
-            finish = calculation.indexOf("]")
-            replacementid = calculation.slice(start + 1, finish)
-            try {
-                replacementtext = document.getElementById(replacementid).value
-                replacement = (replacementtext == "") ? (0) : (parseInt(replacementtext))
-                calculation = calculation.replace(calculation.slice(start, finish + 1), String(replacement))
-            }
-            catch { replacementtext = "" }
+        const field = fields[i];
+        const calculation = field.textContent;
 
-        }
-        calculation = calculation.replaceAll("--", "+")
-        if (calculation == "") { field.value = "" }
-        else {
-            try {
-                val = eval(calculation)
-                if (isNaN(val)) { field.value = calculation }
-                else { field.value = eval(calculation) }
-            } catch (error) {
-                field.value = calculation
-            }
-        }
+        // Split calculation by lines and process each separately
+        const lines = calculation.split('\n');
+        const resultLines = lines.map(processCalculationLine);
 
+        // Combine the results with preserved line structure
+        field.value = resultLines.join('\n');
+    }
+}
+
+function processCalculationLine(line) {
+    // Skip empty lines but preserve them
+    if (line.trim() === '') return '';
+
+    // If no calculation markers are present, return the line as is
+    if (!/[\[\]\+\-\*\/\d]/.test(line)) return line;
+
+    // Extract all calculation parts (dice notation, numbers, references)
+    const calculationRegex = /(\d+d\d+|\[\w+\]|[\+\-\*\/]|\d+)/g;
+    const calcParts = [];
+    const textParts = [];
+
+    let lastIndex = 0;
+    let match;
+
+    while ((match = calculationRegex.exec(line)) !== null) {
+        // Add text before this match
+        textParts.push(line.substring(lastIndex, match.index));
+        // Add this calculation part
+        calcParts.push(match[0]);
+        lastIndex = match.index + match[0].length;
     }
 
+    // Add any remaining text
+    textParts.push(line.substring(lastIndex));
+
+    // If no calculation parts found, return original line
+    if (calcParts.length === 0) return line;
+
+    // Join all calculation parts and process them
+    let calculationPart = calcParts.join('');
+
+    // Replace all references
+    const processedCalcPart = replaceReferences(calculationPart);
+    const cleanedCalcPart = processedCalcPart.replaceAll("--", "+");
+
+    // Process the calculation part to get dice and numeric results
+    const result = processCalculationExpression(cleanedCalcPart);
+
+    // Format the result
+    const formattedResult = formatResult(result.dice, result.numeric);
+
+    // Check if this is a pure calculation (all parts are calculation related)
+    const isPureCalculation = textParts.every(part => part.trim() === '');
+
+    if (isPureCalculation) {
+        // If it's a pure calculation, return just the result without any surrounding text
+        return formattedResult;
+    } else {
+        // Return the first text part followed by the result and any trailing text
+        return textParts[0] + formattedResult + textParts.slice(1).join('');
+    }
+}
+
+function processCalculationExpression(expression) {
+    // Extract all dice notations
+    const diceResults = {};
+    const diceRegex = /(\d+)d(\d+)/g;
+    let match;
+    let diceReplaced = expression;
+
+    while ((match = diceRegex.exec(expression)) !== null) {
+        const count = parseInt(match[1]);
+        const die = match[2];
+
+        if (!diceResults[die]) diceResults[die] = 0;
+        diceResults[die] += count;
+
+        // Replace dice notation with 0 for evaluation
+        diceReplaced = diceReplaced.replace(match[0], "0");
+    }
+
+    // Clean up the expression for evaluation
+    const mathExpression = diceReplaced
+        .replace(/\s*\+\s*\+\s*/g, "+")
+        .replace(/^\s*\+\s*|\s*\+\s*$/g, "")
+        .trim();
+
+    // Evaluate the remaining mathematical expression
+    let numericValue = 0;
+    try {
+        if (mathExpression) {
+            numericValue = eval(mathExpression);
+            if (isNaN(numericValue)) numericValue = 0;
+        }
+    } catch (e) {
+        console.error("Error evaluating expression:", mathExpression, e);
+    }
+
+    return { dice: diceResults, numeric: numericValue };
+}
+
+function formatResult(dice, numericValue) {
+    // Format dice part
+    const diceParts = [];
+    for (const [die, count] of Object.entries(dice)) {
+        if (count > 0) {
+            diceParts.push(`${count}d${die}`);
+        }
+    }
+
+    const diceString = diceParts.join(' + ');
+
+    // If we only have numeric value
+    if (!diceString) {
+        return numericValue === 0 ? "0" : numericValue.toString();
+    }
+
+    // If we have dice but no numeric value or numeric value is 0
+    if (numericValue === 0) {
+        return diceString;
+    }
+
+    // If we have both dice and numeric value
+    const sign = numericValue > 0 ? " + " : " - ";
+    return `${diceString}${sign}${Math.abs(numericValue)}`;
+}
+
+function replaceReferences(line) {
+    let processedLine = line;
+    const count = (processedLine.match(/\[/g) || []).length;
+
+    for (let j = 0; j < count; j++) {
+        const start = processedLine.indexOf("[");
+        const finish = processedLine.indexOf("]");
+        if (start === -1 || finish === -1) break;
+
+        const replacementId = processedLine.slice(start + 1, finish);
+
+        try {
+            const element = document.getElementById(replacementId);
+            if (!element) throw new Error("Element not found");
+
+            let replacementText = element.value;
+            // Ensure we get a numeric value if possible
+            const numericValue = parseFloat(replacementText);
+            const replacement = (replacementText === "" || isNaN(numericValue)) ? "0" : numericValue.toString();
+            processedLine = processedLine.replace(processedLine.slice(start, finish + 1), replacement);
+        } catch {
+            processedLine = processedLine.replace(processedLine.slice(start, finish + 1), "0");
+        }
+    }
+
+    return processedLine;
 }
 
 function updatemodifier() {
