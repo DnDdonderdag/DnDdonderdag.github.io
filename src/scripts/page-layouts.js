@@ -131,15 +131,15 @@ function createAttackpage(top, left) {
         createFormField(top + 73, left + 440, 27, 27, "AC2", "input", 20, "#dde4ff", "center", maindiv, true, "[armor0button]*[armor0] + [armor1button]*[armor1] + [armor2button]*[armor2] + [armor3button]*[armor3]", true, addedclass);
     }
     createFormField(top + 68, left + 420 + 75, 36, 38, "INITIATIVE2", "input", 25, "#dde4ff", "center", maindiv, true, "[DEXmod]", true, addedclass);
-    createFormField(top + 68, left + 420 + 138, 36, 38, "SPEED2", "input", 25, "#dde4ff", "center", maindiv, false, "", true, addedclass);
+    createFormField(top + 68, left + 420 + 138, 36, 38, "SPEED2", "input", 25, "#dde4ff", "center", maindiv, true, "", true, addedclass);
     total = createFormField(top + 138, left + 515, 40, 10, "totalhitpoints2", "input", "9", "#dde4ff", "left", maindiv, true, "", true, addedclass);
-    hp = createFormField(top + 152, left + 440, 75, 49, "currenthitpoints2", "input", "30", "#dde4ff", "center", maindiv, false, "", true, addedclass);
-    createFormField(top + 152, left + 520, 75, 49, "TEMPORARY HIT POINTS2", "input", "28", "#dde4ff", "center", maindiv, false, "", true, addedclass);
+    hp = createFormField(top + 152, left + 440, 75, 49, "currenthitpoints2", "input", "30", "#dde4ff", "center", maindiv, true, "", true, addedclass);
+    createFormField(top + 152, left + 520, 75, 49, "TEMPORARY HIT POINTS2", "input", "28", "#dde4ff", "center", maindiv, true, "", true, addedclass);
     createText(top + 204, left + 440, 10, 80, "CURRENT HIT POINTS", 7, "#000000", "center", maindiv, addedclass);
     createText(top + 204, left + 520, 10, 80, "TEMPORARY HIT POINTS", 7, "#000000", "center", maindiv, addedclass);
     createText(top + 140, left + 435, 10, 80, "HIT POINT MAXIMUM", 7, "#000000", "center", maindiv, addedclass);
     createScriptedButton(top + 138, left + 560, 39, 12, "Heal", healscript, maindiv, addedclass);
-    createFormField(top - 59, left + 440, 156, 62, "appliedConditions", "textarea", "14", "#dde4ff", "left", maindiv, false, "", false, addedclass);
+    createFormField(top - 59, left + 440, 156, 62, "appliedConditions", "textarea", "14", "#dde4ff", "left", maindiv, true, "", true, addedclass);
     createText(top + 9, left + 440, 20, 156, "CURRENTLY APPLIED CONDITIONS", 8, "#000000", "center", maindiv, addedclass);
     createFrame(140, 30, top + 27, left + 450, false, false, "concentration", "page1", "textarea", addedclass);
     createText(top + 36, left + 455, 20, 95, "CONCENTRATION", 10, "#000000", "center", maindiv, addedclass);
