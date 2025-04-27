@@ -118,20 +118,30 @@ function processCalculationLine(line) {
     // If no calculation markers are present, return the line as is
     if (!/[\[\]\+\-\*\/\d]/.test(line)) return line;
 
-    // Split the line into text prefix and calculation part
-    // This regex now preserves spaces by making them part of the groups
-    const textMatch = line.match(/^(.*?)(\d+d\d+|\d+[\+\-\*\/]|\[.*?\])/);
-    if (!textMatch) return line;
+    // Extract all calculation parts (dice notation, numbers, references)
+    const calculationRegex = /(\d+d\d+|\[\w+\]|[\+\-\*\/]|\d+)/g;
+    const calcParts = [];
+    const textParts = [];
 
-    // Extract text prefix (everything before the first calculation element)
-    const textPrefix = textMatch[1];
+    let lastIndex = 0;
+    let match;
 
-    // Process the calculation (the rest of the line including the first matched calculation element)
-    const startOfCalcIndex = textMatch.index + textPrefix.length;
-    const calculationPart = line.substring(startOfCalcIndex);
+    while ((match = calculationRegex.exec(line)) !== null) {
+        // Add text before this match
+        textParts.push(line.substring(lastIndex, match.index));
+        // Add this calculation part
+        calcParts.push(match[0]);
+        lastIndex = match.index + match[0].length;
+    }
 
-    // If there's no calculation part, return the original line
-    if (!calculationPart.trim()) return line;
+    // Add any remaining text
+    textParts.push(line.substring(lastIndex));
+
+    // If no calculation parts found, return original line
+    if (calcParts.length === 0) return line;
+
+    // Join all calculation parts and process them
+    let calculationPart = calcParts.join('');
 
     // Replace all references
     const processedCalcPart = replaceReferences(calculationPart);
@@ -143,9 +153,8 @@ function processCalculationLine(line) {
     // Format the result
     const formattedResult = formatResult(result.dice, result.numeric);
 
-    // Combine the text prefix with the formatted result
-    // Preserve exact spacing from the original text prefix
-    return textPrefix + formattedResult;
+    // Return the first text part followed by the result
+    return textParts[0] + formattedResult + textParts.slice(1).join('');
 }
 
 function processCalculationExpression(expression) {
