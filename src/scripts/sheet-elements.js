@@ -221,7 +221,7 @@ function fillEquipmentSlot(top, left, amount, name, parentdiv, addedclass) {
         }
         if (name == "spell effects") {
             height = 40
-            createFormField(top + 10 + height * i, left + 25, 150, 35, name + String(i), "input", 18, "#dde4ff", "left", parentdiv, false, "", true, addedclass)
+            createFormField(top + 10 + height * i, left + 25, 150, 35, name + String(i) + "name", "input", 18, "#dde4ff", "left", parentdiv, false, "", true, addedclass)
         }
         createButton(top + 33 + height * i, left + 10, 10, 0, name + String(i) + "button", genericbuttonclick, parentdiv, "")
         line = document.createElement("div");
@@ -230,9 +230,7 @@ function fillEquipmentSlot(top, left, amount, name, parentdiv, addedclass) {
         line.draggable = false;
         line.style = "--top:" + String(top + 47 + height * i) + "px; --left:" + String(left + 10) + "px; --width:" + String(170) + "px; --height:" + String(1) + "px"
         parentdiv.appendChild(line);
-
     }
-
 }
 
 function createspellbar(top, left, width, level, parentdiv, version, addedclass) {
