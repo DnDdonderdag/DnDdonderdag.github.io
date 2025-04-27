@@ -115,39 +115,101 @@ function processCalculationLine(line) {
     // Skip empty lines but preserve them
     if (line.trim() === '') return '';
 
-    // Check if line contains math expression indicators
+    // If no calculation markers are present, return the line as is
     if (!/[\[\]\+\-\*\/\d]/.test(line)) return line;
 
-    // Replace references and normalize
-    let processedLine = replaceReferences(line);
-    processedLine = processedLine.replaceAll("--", "+");
+    // Split the line into text prefix and calculation part
+    // This regex now preserves spaces by making them part of the groups
+    const textMatch = line.match(/^(.*?)(\d+d\d+|\d+[\+\-\*\/]|\[.*?\])/);
+    if (!textMatch) return line;
 
-    // Split line into dict with three different types of expressions
-    // In any order
-    // 1. Math expressions
-    // 2. Dice notation
-    // 3. Plain text
-    const parts = processedLine.split(/(\d+d\d+|\d+\s*[\+\-\*\/]\s*\d+|\d+|\[.*?\])/g);
+    // Extract text prefix (everything before the first calculation element)
+    const textPrefix = textMatch[1];
 
-    // Process each part separately
-    for (let i = 0; i < parts.length; i++) {
-        const part = parts[i];
+    // Process the calculation (the rest of the line including the first matched calculation element)
+    const startOfCalcIndex = textMatch.index + textPrefix.length;
+    const calculationPart = line.substring(startOfCalcIndex);
 
-        if (part.trim() === '') continue;
+    // If there's no calculation part, return the original line
+    if (!calculationPart.trim()) return line;
 
-        if (part.match(/\d+d\d+/)) {
-            parts[i] = processDiceNotation(part);
-        } else if (part.match(/\d+\s*[\+\-\*\/]\s*\d+/)) {
-            parts[i] = evaluateMathExpression(part);
-        } else {
-            parts[i] = part;
+    // Replace all references
+    const processedCalcPart = replaceReferences(calculationPart);
+    const cleanedCalcPart = processedCalcPart.replaceAll("--", "+");
+
+    // Process the calculation part to get dice and numeric results
+    const result = processCalculationExpression(cleanedCalcPart);
+
+    // Format the result
+    const formattedResult = formatResult(result.dice, result.numeric);
+
+    // Combine the text prefix with the formatted result
+    // Preserve exact spacing from the original text prefix
+    return textPrefix + formattedResult;
+}
+
+function processCalculationExpression(expression) {
+    // Extract all dice notations
+    const diceResults = {};
+    const diceRegex = /(\d+)d(\d+)/g;
+    let match;
+    let diceReplaced = expression;
+
+    while ((match = diceRegex.exec(expression)) !== null) {
+        const count = parseInt(match[1]);
+        const die = match[2];
+
+        if (!diceResults[die]) diceResults[die] = 0;
+        diceResults[die] += count;
+
+        // Replace dice notation with 0 for evaluation
+        diceReplaced = diceReplaced.replace(match[0], "0");
+    }
+
+    // Clean up the expression for evaluation
+    const mathExpression = diceReplaced
+        .replace(/\s*\+\s*\+\s*/g, "+")
+        .replace(/^\s*\+\s*|\s*\+\s*$/g, "")
+        .trim();
+
+    // Evaluate the remaining mathematical expression
+    let numericValue = 0;
+    try {
+        if (mathExpression) {
+            numericValue = eval(mathExpression);
+            if (isNaN(numericValue)) numericValue = 0;
+        }
+    } catch (e) {
+        console.error("Error evaluating expression:", mathExpression, e);
+    }
+
+    return { dice: diceResults, numeric: numericValue };
+}
+
+function formatResult(dice, numericValue) {
+    // Format dice part
+    const diceParts = [];
+    for (const [die, count] of Object.entries(dice)) {
+        if (count > 0) {
+            diceParts.push(`${count}d${die}`);
         }
     }
 
-    // Reassemble the line
-    processedLine = parts.join('');
+    const diceString = diceParts.join(' + ');
 
-    return processedLine;
+    // If we only have numeric value
+    if (!diceString) {
+        return numericValue === 0 ? "0" : numericValue.toString();
+    }
+
+    // If we have dice but no numeric value or numeric value is 0
+    if (numericValue === 0) {
+        return diceString;
+    }
+
+    // If we have both dice and numeric value
+    const sign = numericValue > 0 ? " + " : " - ";
+    return `${diceString}${sign}${Math.abs(numericValue)}`;
 }
 
 function replaceReferences(line) {
@@ -157,11 +219,18 @@ function replaceReferences(line) {
     for (let j = 0; j < count; j++) {
         const start = processedLine.indexOf("[");
         const finish = processedLine.indexOf("]");
+        if (start === -1 || finish === -1) break;
+
         const replacementId = processedLine.slice(start + 1, finish);
 
         try {
-            const replacementText = document.getElementById(replacementId).value;
-            const replacement = (!replacementText || replacementText == "") ? "0" : replacementText;
+            const element = document.getElementById(replacementId);
+            if (!element) throw new Error("Element not found");
+
+            let replacementText = element.value;
+            // Ensure we get a numeric value if possible
+            const numericValue = parseFloat(replacementText);
+            const replacement = (replacementText === "" || isNaN(numericValue)) ? "0" : numericValue.toString();
             processedLine = processedLine.replace(processedLine.slice(start, finish + 1), replacement);
         } catch {
             processedLine = processedLine.replace(processedLine.slice(start, finish + 1), "0");
@@ -169,70 +238,6 @@ function replaceReferences(line) {
     }
 
     return processedLine;
-}
-
-function evaluateMathExpression(expression) {
-    try {
-        const result = eval(expression);
-        return (result === undefined || isNaN(result)) ? expression : (result === 0 ? "0" : result);
-    } catch {
-        return expression;
-    }
-}
-
-function processDiceNotation(line) {
-    // Extract dice and remaining expression
-    const diceCounts = extractDiceNotation(line);
-    const modifiedLine = removeDiceNotation(line);
-
-    // Calculate numeric component
-    let numericValue = 0;
-    if (modifiedLine.trim() !== "") {
-        try {
-            numericValue = eval(modifiedLine);
-            if (numericValue === undefined || isNaN(numericValue)) numericValue = 0;
-        } catch {
-            return line;
-        }
-    }
-
-    return formatDiceResult(diceCounts, numericValue);
-}
-
-function extractDiceNotation(line) {
-    const diceCounts = {};
-    const diceRegex = /(\d+)d(\d+)/g;
-    let match;
-
-    while ((match = diceRegex.exec(line)) !== null) {
-        const count = parseInt(match[1]);
-        const die = match[2];
-
-        if (!diceCounts[die]) diceCounts[die] = 0;
-        diceCounts[die] += count;
-    }
-
-    return diceCounts;
-}
-
-function removeDiceNotation(line) {
-    let modifiedLine = line.replace(/\d+d\d+/g, "");
-    return modifiedLine.replace(/\s*\+\s*\+\s*/g, "+").replace(/^\s*\+\s*|\s*\+\s*$/g, "");
-}
-
-function formatDiceResult(diceCounts, numericValue) {
-    let result = Object.entries(diceCounts)
-        .filter(([_, count]) => count > 0)
-        .map(([die, count]) => `${count}d${die}`)
-        .join(" + ");
-
-    if (numericValue === 0) {
-        return result || "0";
-    } else {
-        const sign = numericValue > 0 ? " + " : " - ";
-        const numericPart = Math.abs(numericValue);
-        return result ? `${result}${sign}${numericPart}` : `${numericValue}`;
-    }
 }
 
 function updatemodifier() {
