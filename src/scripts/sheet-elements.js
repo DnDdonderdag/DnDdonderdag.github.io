@@ -154,12 +154,12 @@ function filldarkbox(top, left) {
 
     //hitpoint and hit dice fields
     createFormField(83, 90, 90, 10, "totalhitpoints1", "input", "9", "#dde4ff", "left", maindiv, true, "", true, "")
-    createFormField(98, 15, 165, 45, "currenthitpoints1", "input", "30", "#dde4ff", "center", maindiv, false, "", true, "")
+    createFormField(98, 15, 165, 45, "currenthitpoints1", "input", "30", "#dde4ff", "center", maindiv, true, "", true, "")
     createText(85, 3, 12, 85, "HIT POINT MAXIMUM", 7.5, "#c5c6c7", "right", maindiv)
     createFormField(235, 40, 43, 10, "totalhitdice", "input", "9", "#dde4ff", "left", maindiv)
     createFormField(250, 15, 68, 25, "currenthitdice", "input", "15", "#dde4ff", "center", maindiv)
     createText(238, 3, 12, 35, "TOTAL", 7.5, "#c5c6c7", "right", maindiv)
-    createFormField(171, 15, 165, 33, "TEMPORARY HIT POINTS1", "textarea", "28", "#dde4ff", "center", maindiv, false, "", true, "")
+    createFormField(171, 15, 165, 33, "TEMPORARY HIT POINTS1", "textarea", "28", "#dde4ff", "center", maindiv, true, "", true, "")
     createFormField(15, 75, 38, 38, "INITIATIVE1", "input", 25, "#dde4ff", "center", maindiv, true, "[DEXmod]", true, "")
     createFormField(15, 141, 38, 38, "SPEED1", "input", 25, "#dde4ff", "center", maindiv, true, "", true, "")
 
