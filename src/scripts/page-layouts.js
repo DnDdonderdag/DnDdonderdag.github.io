@@ -249,7 +249,7 @@ function createBackstoryPage(top, left) {
 
     createHeaderpage4(top - 120, left - 30);
 
-    createFrame(400, 350, top, left, true, true, "BACKSTORY", "page1", "textarea", "txt");
+    createFrame(400, 350, top, left, true, true, "BACKSTORY", "page1", "textarea", "");
     createFeaturebox(210, 350, 6, "c5c6c7", top, left + 410, "index");
     backstoryTabs = ["PERSONALITY TRAITS", "IDEALS", "BONDS", "FLAWS"];
     for (let i = 0; i < 4; i++) {
