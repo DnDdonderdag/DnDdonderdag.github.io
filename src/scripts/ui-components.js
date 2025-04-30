@@ -98,9 +98,9 @@ function createFrame(width, height, top, left, formbool = false, namebool = fals
     //Create text area
     if (formbool) {
         const formfield = document.createElement(format);
-        if (format == "textarea" && !(addedclass == "txt")) { formfield.className = "frameform save sizeadjust calculated"; }
+        if (name == "BACKSTORY") { formfield.className = "frameform save sizeadjust"; }
+        else if (format == "textarea") { formfield.className = "frameform save sizeadjust calculated"; }
         if (format == "input") { formfield.className = "frameform save sizeadjustinput calculated"; }
-        if (format == "textarea" && addedclass == "txt") { formfield.className = "frameform save sizeadjust"; }
         formfield.id = name
         formfield.style = "--width:" + String(width - 25) + "px; --height:" + String(height - 25) + "px; --boxlength:" + String(width - 25) + "; --startfont:" + String(20);
         formfield.value = "";
