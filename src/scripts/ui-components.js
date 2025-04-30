@@ -100,6 +100,7 @@ function createFrame(width, height, top, left, formbool = false, namebool = fals
         const formfield = document.createElement(format);
         if (format == "textarea") { formfield.className = "frameform save sizeadjust calculated"; }
         if (format == "input") { formfield.className = "frameform save sizeadjustinput calculated"; }
+        if (format == "input" && addedclass == "txt") { formfield.className = "frameform save sizeadjustinput"; }
         formfield.id = name
         formfield.style = "--width:" + String(width - 25) + "px; --height:" + String(height - 25) + "px; --boxlength:" + String(width - 25) + "; --startfont:" + String(20);
         formfield.value = "";
