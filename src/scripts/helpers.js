@@ -97,9 +97,19 @@ function updategenericbuttons() {
 }
 
 function updateCalculatedFields() {
+    // Get all calculated fields
     const fields = document.getElementsByClassName("calculated");
+
+    // Skip fields with ID containing "BACKSTORY"
     for (let i = 0; i < fields.length; i++) {
         const field = fields[i];
+        const exceptions = ["BACKSTORY", "GENERAL", "LOCATIONS", "NPCS", "QUESTS", "LORE"]
+        // Skip processing for any field with ID containing elements from exceptions array
+        if (field.id && exceptions.some(exception => field.id.includes(exception))) {
+            field.value = field.textContent;
+            continue;
+        }
+
         const calculation = field.textContent;
 
         // Split calculation by lines and process each separately
