@@ -1,4 +1,4 @@
-import { calcDice, calcNum, operator } from "./classes.js";
+import { calcDice, calcNum, operator } from './classes.js';
 
 const operators = {
   '^': {
@@ -43,7 +43,7 @@ export const toRPN = (input) => {
 
   const handlePop = () => {
     return stack.pop();
-  }
+  };
 
   const handleToken = (token) => {
     switch (true) {
@@ -95,4 +95,3 @@ export const toRPN = (input) => {
 
   return output;
 };
-
